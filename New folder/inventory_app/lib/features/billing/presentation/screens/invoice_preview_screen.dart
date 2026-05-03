@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/invoice_entity.dart';
 import '../utils/invoice_formatter.dart';
+import '../../../settings/presentation/providers/store_details_provider.dart';
 
-class InvoicePreviewScreen extends StatelessWidget {
+class InvoicePreviewScreen extends ConsumerWidget {
   final InvoiceEntity invoice;
   const InvoicePreviewScreen({super.key, required this.invoice});
 
   @override
-  Widget build(BuildContext context) {
-    final formattedText = InvoiceFormatter.formatForThermalPrinter(invoice);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final storeDetails = ref.watch(storeDetailsProvider);
+    final formattedText = InvoiceFormatter.formatForThermalPrinter(invoice, storeDetails);
 
     return Scaffold(
       appBar: AppBar(

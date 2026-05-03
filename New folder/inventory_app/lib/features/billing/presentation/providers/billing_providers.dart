@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../inventory/presentation/providers/inventory_providers.dart';
 import '../../../inventory/domain/entities/product_entity.dart';
@@ -73,6 +74,46 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
 
 final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) {
   return CartNotifier();
+});
+
+enum InvoiceSortType { dateNewest, dateOldest, amountHighLow, amountLowHigh }
+
+final invoiceSearchQueryProvider = StateProvider<String>((ref) => '');
+final invoiceSortProvider = StateProvider<InvoiceSortType>((ref) => InvoiceSortType.dateNewest);
+final invoiceDateRangeProvider = StateProvider<DateTimeRange?>((ref) => null);
+
+final filteredInvoiceHistoryProvider = Provider<AsyncValue<List<InvoiceEntity>>>((ref) {
+  final historyAsync = ref.watch(invoiceHistoryProvider);
+  final searchQuery = ref.watch(invoiceSearchQueryProvider).toLowerCase();
+  final sortType = ref.watch(invoiceSortProvider);
+  final dateRange = ref.watch(invoiceDateRangeProvider);
+
+  return historyAsync.whenData((invoices) {
+    var filtered = invoices.where((inv) {
+      final matchesSearch = inv.customerName?.toLowerCase().contains(searchQuery) ?? false || 
+                          inv.id.toString().contains(searchQuery);
+      
+      bool matchesDate = true;
+      if (dateRange != null) {
+        matchesDate = inv.date.isAfter(dateRange.start) && 
+                      inv.date.isBefore(dateRange.end.add(const Duration(days: 1)));
+      }
+      
+      return matchesSearch && matchesDate;
+    }).toList();
+
+    switch (sortType) {
+      case InvoiceSortType.dateNewest:
+        filtered.sort((a, b) => b.date.compareTo(a.date));
+      case InvoiceSortType.dateOldest:
+        filtered.sort((a, b) => a.date.compareTo(b.date));
+      case InvoiceSortType.amountHighLow:
+        filtered.sort((a, b) => b.totalAmount.compareTo(a.totalAmount));
+      case InvoiceSortType.amountLowHigh:
+        filtered.sort((a, b) => a.totalAmount.compareTo(b.totalAmount));
+    }
+    return filtered;
+  });
 });
 
 final invoiceHistoryProvider = AsyncNotifierProvider<InvoiceHistoryNotifier, List<InvoiceEntity>>(() {

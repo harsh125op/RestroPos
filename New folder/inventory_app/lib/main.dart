@@ -1,12 +1,29 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
+import 'core/utils/logger.dart';
 import 'features/inventory/presentation/screens/product_list_screen.dart';
 import 'features/billing/presentation/screens/create_invoice_screen.dart';
 import 'features/billing/presentation/screens/invoice_history.dart';
+import 'features/reports/presentation/screens/reports_dashboard_screen.dart';
+import 'features/settings/presentation/screens/settings_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Handle Flutter framework errors
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    AppLogger.e('Flutter Framework Error', details.exception, details.stack);
+  };
+
+  // Handle platform errors (async/native)
+  PlatformDispatcher.instance.onError = (error, stack) {
+    AppLogger.e('Platform Error', error, stack);
+    return true;
+  };
+
   runApp(
     const ProviderScope(
       child: MyApp(),
@@ -14,14 +31,18 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+    
     return MaterialApp(
       title: 'QuickPOS Restaurant',
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
       debugShowCheckedModeBanner: false,
       home: const DashboardScreen(),
     );
@@ -37,6 +58,16 @@ class DashboardScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("QuickPOS"),
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -77,11 +108,11 @@ class DashboardScreen extends StatelessWidget {
                   color: Colors.orange,
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const InvoiceHistoryScreen())),
                 ),
-                const _DashboardCard(
+                _DashboardCard(
                   title: "Reports",
                   icon: Icons.analytics,
                   color: Colors.purple,
-                  onTap: _noOp, // Defined below for optimization
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ReportsDashboardScreen())),
                 ),
               ],
             ),

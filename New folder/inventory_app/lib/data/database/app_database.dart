@@ -34,7 +34,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -44,12 +44,17 @@ class AppDatabase extends _$AppDatabase {
             await m.createTable(invoiceItems);
           }
           if (from < 3) {
-            // Pivot to Restaurant POS: Add category, Drop sku (manual recreate)
             await m.alterTable(TableMigration(products, columnTransformer: {
               products.category: const Constant('Uncategorized'),
             }, newColumns: [
               products.category
             ]));
+          }
+          if (from < 4) {
+            // Add indexes for performance
+            await m.createIndex(Index('idx_product_name', 'CREATE INDEX idx_product_name ON products (name)'));
+            await m.createIndex(Index('idx_product_category', 'CREATE INDEX idx_product_category ON products (category)'));
+            await m.createIndex(Index('idx_invoice_date', 'CREATE INDEX idx_invoice_date ON invoices (date)'));
           }
         },
         beforeOpen: (details) async {
@@ -110,6 +115,15 @@ class AppDatabase extends _$AppDatabase {
           quantity: Value(product.quantity - item.quantity.value),
         ));
       }
+    });
+  }
+
+  // Clear All Data
+  Future<void> clearDatabase() async {
+    await transaction(() async {
+      await delete(invoiceItems).go();
+      await delete(invoices).go();
+      await delete(products).go();
     });
   }
 }

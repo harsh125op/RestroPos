@@ -14,6 +14,38 @@ final productRepositoryProvider = Provider<ProductRepository>((ref) {
   return ProductRepositoryImpl(ref.watch(databaseProvider));
 });
 
+enum ProductSortType { name, priceLowHigh, priceHighLow, stockLowHigh, stockHighLow }
+
+final productSearchQueryProvider = StateProvider<String>((ref) => '');
+final productSortProvider = StateProvider<ProductSortType>((ref) => ProductSortType.name);
+
+final filteredProductListProvider = Provider<AsyncValue<List<ProductEntity>>>((ref) {
+  final productsAsync = ref.watch(productListProvider);
+  final searchQuery = ref.watch(productSearchQueryProvider).toLowerCase();
+  final sortType = ref.watch(productSortProvider);
+
+  return productsAsync.whenData((products) {
+    var filtered = products.where((p) {
+      return p.name.toLowerCase().contains(searchQuery) || 
+             p.category.toLowerCase().contains(searchQuery);
+    }).toList();
+
+    switch (sortType) {
+      case ProductSortType.name:
+        filtered.sort((a, b) => a.name.compareTo(b.name));
+      case ProductSortType.priceLowHigh:
+        filtered.sort((a, b) => a.price.compareTo(b.price));
+      case ProductSortType.priceHighLow:
+        filtered.sort((a, b) => b.price.compareTo(a.price));
+      case ProductSortType.stockLowHigh:
+        filtered.sort((a, b) => a.quantity.compareTo(b.quantity));
+      case ProductSortType.stockHighLow:
+        filtered.sort((a, b) => b.quantity.compareTo(a.quantity));
+    }
+    return filtered;
+  });
+});
+
 final productListProvider = AsyncNotifierProvider<ProductListNotifier, List<ProductEntity>>(() {
   return ProductListNotifier();
 });
