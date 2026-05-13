@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../providers/printing_providers.dart';
 import '../../data/services/receipt_formatter.dart';
 
@@ -26,6 +27,14 @@ class _PrinterSettingsScreenState extends ConsumerState<PrinterSettingsScreen> {
 
   Future<void> _loadDevices() async {
     setState(() { _isLoading = true; });
+    
+    // Request permissions before loading devices
+    await [
+      Permission.bluetoothScan,
+      Permission.bluetoothConnect,
+      Permission.location,
+    ].request();
+
     final service = ref.read(bluetoothPrintServiceProvider);
     final devices = await service.getPairedDevices();
     setState(() {
