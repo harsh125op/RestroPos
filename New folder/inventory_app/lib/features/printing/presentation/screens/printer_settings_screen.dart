@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import '../providers/printing_providers.dart';
 import '../../data/services/receipt_formatter.dart';
 
@@ -11,11 +12,71 @@ class PrinterSettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _PrinterSettingsScreenState extends ConsumerState<PrinterSettingsScreen> {
+  List<BluetoothDevice> _devices = [];
+  BluetoothDevice? _selectedDevice;
+  bool _isConnected = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDevices();
+    _checkConnection();
+  }
+
+  Future<void> _loadDevices() async {
+    setState(() { _isLoading = true; });
+    final service = ref.read(bluetoothPrintServiceProvider);
+    final devices = await service.getPairedDevices();
+    setState(() {
+      _devices = devices;
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _checkConnection() async {
+    final service = ref.read(bluetoothPrintServiceProvider);
+    final connected = await service.isConnected();
+    setState(() {
+      _isConnected = connected ?? false;
+    });
+  }
+
+  Future<void> _connect() async {
+    if (_selectedDevice == null) return;
+    setState(() { _isLoading = true; });
+    final service = ref.read(bluetoothPrintServiceProvider);
+    final success = await service.connect(_selectedDevice!);
+    setState(() {
+      _isConnected = success;
+      _isLoading = false;
+    });
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Connected successfully!")),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Failed to connect."), backgroundColor: Colors.red),
+      );
+    }
+  }
+
+  Future<void> _disconnect() async {
+    final service = ref.read(bluetoothPrintServiceProvider);
+    await service.disconnect();
+    setState(() {
+      _isConnected = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Disconnected.")),
+    );
+  }
+
   Future<void> _printTestReceipt() async {
     final service = ref.read(bluetoothPrintServiceProvider);
     final formatter = ref.read(receiptFormatterProvider);
 
-    // Generate receipt text with test data
     final receiptText = formatter.generateReceipt(
       restaurantName: "QuickPos Restaurant",
       phoneNumber: "+91 9876543210",
@@ -30,37 +91,13 @@ class _PrinterSettingsScreenState extends ConsumerState<PrinterSettingsScreen> {
       grandTotal: 70,
     );
 
-    final success = await service.printReceipt(receiptText);
+    final success = await service.printReceipt(receiptText, 'assets/billlogo.png');
     
-    if (mounted) {
-      if (!success) {
-        // If failed, assume app is not installed or error
-        _showAppNotInstalledDialog();
-      }
+    if (!success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Failed to print. Is printer connected?"), backgroundColor: Colors.red),
+      );
     }
-  }
-
-  void _showAppNotInstalledDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("App Not Installed"),
-        content: const Text("The 'Bluetooth Print' app is required for printing. Would you like to install it from the Play Store?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ref.read(bluetoothPrintServiceProvider).openPlayStore();
-            },
-            child: const Text("Install"),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -68,6 +105,12 @@ class _PrinterSettingsScreenState extends ConsumerState<PrinterSettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Printer Settings"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _loadDevices,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -83,23 +126,17 @@ class _PrinterSettingsScreenState extends ConsumerState<PrinterSettingsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Row(
+                    Row(
                       children: [
-                        Icon(Icons.print, color: Colors.teal, size: 28),
-                        SizedBox(width: 12),
-                        Text("Printing Integration", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        Icon(Icons.print, color: _isConnected ? Colors.green : Colors.grey, size: 28),
+                        const SizedBox(width: 12),
+                        const Text("Printer Status", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       ],
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      "This app uses the external 'Bluetooth Print' app to handle thermal printing via Intents. This ensures maximum stability and compatibility.",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    const SizedBox(height: 16),
-                    const ListTile(
-                      leading: Icon(Icons.check_circle, color: Colors.green),
-                      title: Text("Intent Communication Active"),
-                      subtitle: Text("Ready to send print jobs"),
+                    Text(
+                      _isConnected ? "Connected" : "Disconnected",
+                      style: TextStyle(fontSize: 16, color: _isConnected ? Colors.green : Colors.red, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -107,34 +144,67 @@ class _PrinterSettingsScreenState extends ConsumerState<PrinterSettingsScreen> {
             ),
             const SizedBox(height: 24),
             
-            // Actions
-            const Text("Actions", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text("Paired Devices", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _printTestReceipt,
-                icon: const Icon(Icons.text_fields),
-                label: const Text("Print Test Receipt"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.indigo,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+            if (_isLoading)
+              const Center(child: CircularProgressIndicator())
+            else if (_devices.isEmpty)
+              const Text("No paired devices found. Please pair your printer in your phone's Bluetooth settings first.", style: TextStyle(color: Colors.grey))
+            else
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _devices.length,
+                  itemBuilder: (context, index) {
+                    final device = _devices[index];
+                    return ListTile(
+                      title: Text(device.name ?? "Unknown Device"),
+                      subtitle: Text(device.address ?? ""),
+                      trailing: _selectedDevice == device
+                          ? const Icon(Icons.check_circle, color: Colors.teal)
+                          : null,
+                      onTap: () {
+                        setState(() {
+                          _selectedDevice = device;
+                        });
+                      },
+                    );
+                  },
                 ),
               ),
-            ),
+            
+            const SizedBox(height: 16),
+            
+            if (_selectedDevice != null && !_isConnected)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _connect,
+                  icon: const Icon(Icons.bluetooth_connected),
+                  label: const Text("Connect"),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.teal, foregroundColor: Colors.white),
+                ),
+              ),
+            
+            if (_isConnected)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _disconnect,
+                  icon: const Icon(Icons.bluetooth_disabled),
+                  label: const Text("Disconnect"),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                ),
+              ),
+            
             const SizedBox(height: 12),
             
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: () => ref.read(bluetoothPrintServiceProvider).openPlayStore(),
-                icon: const Icon(Icons.get_app),
-                label: const Text("Install Bluetooth Print App"),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                ),
+                onPressed: _isConnected ? _printTestReceipt : null,
+                icon: const Icon(Icons.print),
+                label: const Text("Print Test Receipt"),
               ),
             ),
           ],

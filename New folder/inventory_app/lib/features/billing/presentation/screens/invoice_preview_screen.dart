@@ -3,9 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/invoice_entity.dart';
 import '../utils/invoice_formatter.dart';
 import '../../../settings/presentation/providers/store_details_provider.dart';
-import '../../../printing/presentation/providers/printing_providers.dart';
 import '../../../printing/presentation/screens/printer_settings_screen.dart';
-import '../../../printing/data/services/receipt_formatter.dart';
+import '../../../printing/presentation/providers/printing_providers.dart';
 
 class InvoicePreviewScreen extends ConsumerWidget {
   final InvoiceEntity invoice;
@@ -85,47 +84,17 @@ class InvoicePreviewScreen extends ConsumerWidget {
         child: ElevatedButton(
           onPressed: () async {
             final service = ref.read(bluetoothPrintServiceProvider);
-            final formatter = ref.read(receiptFormatterProvider);
             
-            final receiptText = formatter.generateReceipt(
-              restaurantName: storeDetails.restaurantName,
-              phoneNumber: storeDetails.phone,
-              address: storeDetails.address,
-              invoiceNumber: invoice.id.toString(),
-              dateTime: invoice.date,
-              cashierName: storeDetails.cashierName,
-              items: invoice.items.map((item) => ReceiptItem(
-                name: item.productName,
-                quantity: item.quantity,
-                price: item.priceAtBilling,
-                total: item.priceAtBilling * item.quantity,
-              )).toList(),
-              grandTotal: invoice.totalAmount,
-            );
-            
-            final success = await service.printReceipt(receiptText);
+            final success = await service.printReceipt(formattedText, 'assets/billlogo.png');
             
             if (context.mounted) {
               if (!success) {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text("App Not Installed"),
-                    content: const Text("The 'Bluetooth Print' app is required for printing. Would you like to install it from the Play Store?"),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("Cancel"),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          ref.read(bluetoothPrintServiceProvider).openPlayStore();
-                        },
-                        child: const Text("Install"),
-                      ),
-                    ],
-                  ),
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Failed to print. Is printer connected?"), backgroundColor: Colors.red),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Printing..."), backgroundColor: Colors.green),
                 );
               }
             }
