@@ -56,7 +56,6 @@ class InvoiceFormatter {
     buffer.writeln('    Thank you for visiting!    ');
     buffer.writeln('       Visit us again!         ');
     buffer.writeln('------- GOOD FOOD, GOOD MOOD -------');
-    buffer.writeln('\n\n');
 
     return buffer.toString();
   }
