@@ -1,0 +1,85 @@
+Analyzing inventory_app...                                      
+
+warning - 'package_api_docs' was removed in Dart '3.7.0' - analysis_options.yaml:27:7 - removed_lint
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\widgets\common_widgets.dart:65:35 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\widgets\common_widgets.dart:123:38 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\widgets\common_widgets.dart:126:64 - deprecated_member_use
+   info - Use relative imports for files in the 'lib' directory - lib\features\billing\data\repositories\billing_repository_impl.dart:2:8 - prefer_relative_imports
+   info - Local variables should be final - lib\features\billing\data\repositories\billing_repository_impl.dart:36:5 - prefer_final_locals
+   info - Local variables should be final - lib\features\billing\presentation\providers\billing_providers.dart:92:5 - prefer_final_locals
+   info - Use relative imports for files in the 'lib' directory - lib\features\billing\presentation\screens\create_invoice_screen.dart:8:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\billing\presentation\screens\create_invoice_screen.dart:10:8 - prefer_relative_imports
+warning - Unused import: 'package:inventory_app/features/printing/presentation/screens/printer_settings_screen.dart' - lib\features\billing\presentation\screens\create_invoice_screen.dart:10:8 - unused_import
+   info - Use relative imports for files in the 'lib' directory - lib\features\billing\presentation\screens\create_invoice_screen.dart:12:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\billing\presentation\screens\create_invoice_screen.dart:14:8 - prefer_relative_imports
+   info - Missing an 'await' for the 'Future' computed by this expression - lib\features\billing\presentation\screens\create_invoice_screen.dart:59:9 - unawaited_futures
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\billing\presentation\screens\create_invoice_screen.dart:152:57 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\billing\presentation\screens\create_invoice_screen.dart:183:52 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\billing\presentation\screens\create_invoice_screen.dart:186:33 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\billing\presentation\screens\create_invoice_screen.dart:209:35 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\billing\presentation\screens\create_invoice_screen.dart:218:52 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\billing\presentation\screens\create_invoice_screen.dart:314:65 - deprecated_member_use
+   info - Unnecessary use of multiple underscores - lib\features\billing\presentation\screens\invoice_history.dart:150:35 - unnecessary_underscores
+   info - Missing an 'await' for the 'Future' computed by this expression - lib\features\billing\presentation\screens\invoice_preview_screen.dart:58:19 - unawaited_futures
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\billing\presentation\screens\invoice_preview_screen.dart:96:41 - deprecated_member_use
+   info - Use interpolation to compose strings and values - lib\features\billing\presentation\utils\invoice_formatter.dart:36:16 - prefer_interpolation_to_compose_strings
+   info - Use relative imports for files in the 'lib' directory - lib\features\inventory\data\repositories\product_repository_impl.dart:2:8 - prefer_relative_imports
+   info - Local variables should be final - lib\features\inventory\presentation\providers\inventory_providers.dart:28:5 - prefer_final_locals
+   info - Don't use 'BuildContext's across async gaps - lib\features\inventory\presentation\screens\add_product_screen.dart:50:30 - use_build_context_synchronously
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\inventory\presentation\screens\add_product_screen.dart:75:17 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps - lib\features\inventory\presentation\screens\edit_product_screen.dart:60:30 - use_build_context_synchronously
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\inventory\presentation\screens\edit_product_screen.dart:85:17 - deprecated_member_use
+   info - Unnecessary use of multiple underscores - lib\features\inventory\presentation\screens\product_list_screen.dart:106:37 - unnecessary_underscores
+   info - Don't invoke 'print' in production code - lib\features\printing\data\services\bluetooth_print_service.dart:21:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\printing\data\services\bluetooth_print_service.dart:24:7 - avoid_print
+   info - Use 'const' with the constructor to improve performance - lib\features\printing\data\services\bluetooth_print_service.dart:31:34 - prefer_const_constructors
+   info - Use interpolation to compose strings and values - lib\features\printing\data\services\receipt_formatter.dart:56:16 - prefer_interpolation_to_compose_strings
+   info - Use 'const' with the constructor to improve performance - lib\features\printing\presentation\screens\printer_settings_screen.dart:81:22 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\printing\presentation\screens\printer_settings_screen.dart:83:24 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes - lib\features\printing\presentation\screens\printer_settings_screen.dart:85:29 - prefer_const_literals_to_create_immutables
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\data\repositories\reports_repository_impl.dart:2:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\data\repositories\reports_repository_impl.dart:3:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\data\repositories\reports_repository_impl.dart:4:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\data\repositories\reports_repository_impl.dart:5:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\data\repositories\reports_repository_impl.dart:6:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\data\repositories\reports_repository_impl.dart:7:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\data\repositories\reports_repository_impl.dart:8:8 - prefer_relative_imports
+   info - Local variables should be final - lib\features\reports\data\repositories\reports_repository_impl.dart:124:5 - prefer_final_locals
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\domain\repositories\reports_repository.dart:1:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\domain\repositories\reports_repository.dart:2:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\domain\repositories\reports_repository.dart:3:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\domain\repositories\reports_repository.dart:4:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\domain\repositories\reports_repository.dart:5:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\providers\reports_provider.dart:2:8 - prefer_relative_imports
+warning - Unused import: 'package:inventory_app/data/database/app_database.dart' - lib\features\reports\presentation\providers\reports_provider.dart:2:8 - unused_import
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\providers\reports_provider.dart:3:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\providers\reports_provider.dart:4:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\providers\reports_provider.dart:5:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\providers\reports_provider.dart:6:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\providers\reports_provider.dart:7:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\providers\reports_provider.dart:8:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\providers\reports_provider.dart:9:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\providers\reports_provider.dart:10:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\screens\reports_dashboard_screen.dart:4:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\screens\reports_dashboard_screen.dart:5:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\screens\reports_dashboard_screen.dart:6:8 - prefer_relative_imports
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\reports\presentation\screens\reports_dashboard_screen.dart:178:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\reports\presentation\screens\reports_dashboard_screen.dart:180:71 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\reports\presentation\screens\reports_dashboard_screen.dart:239:62 - deprecated_member_use
+warning - The value of the local variable 'productSales' isn't used - lib\features\reports\presentation\screens\reports_dashboard_screen.dart:292:11 - unused_local_variable
+   info - Local variables should be final - lib\features\reports\presentation\screens\reports_dashboard_screen.dart:297:7 - prefer_final_locals
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\reports\presentation\screens\reports_dashboard_screen.dart:326:22 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\reports\presentation\screens\reports_dashboard_screen.dart:328:41 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\reports\presentation\screens\reports_dashboard_screen.dart:343:57 - deprecated_member_use
+warning - Unused import: 'package:pdf/pdf.dart' - lib\features\reports\presentation\services\export_service.dart:5:8 - unused_import
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\services\export_service.dart:8:8 - prefer_relative_imports
+   info - Use relative imports for files in the 'lib' directory - lib\features\reports\presentation\services\export_service.dart:9:8 - prefer_relative_imports
+   info - Local variables should be final - lib\features\reports\presentation\services\export_service.dart:16:5 - prefer_final_locals
+warning - Unused import: '../../../../core/widgets/common_widgets.dart' - lib\features\settings\presentation\screens\settings_screen.dart:3:8 - unused_import
+warning - The value of the local variable 'themeMode' isn't used - lib\features\settings\presentation\screens\settings_screen.dart:17:11 - unused_local_variable
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\screens\settings_screen.dart:59:51 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\screens\settings_screen.dart:84:51 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\main.dart:147:24 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\main.dart:149:43 - deprecated_member_use
+warning - The declaration '_noOp' isn't referenced - lib\main.dart:166:6 - unused_element
+

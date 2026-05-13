@@ -6,6 +6,7 @@ import '../../../inventory/presentation/providers/inventory_providers.dart';
 import '../../../billing/presentation/providers/billing_providers.dart';
 import '../../../reports/presentation/services/export_service.dart';
 import 'store_details_screen.dart';
+import '../../../printing/presentation/screens/printer_settings_screen.dart';
 
 final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.light);
 
@@ -49,8 +50,7 @@ class SettingsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 24),
-          _buildSectionTitle(context, "Appearance"),
-          const SizedBox(height: 24),
+
           _buildSectionTitle(context, "Hardware"),
           Card(
             elevation: 0,
@@ -66,9 +66,9 @@ class SettingsScreen extends ConsumerWidget {
                   subtitle: const Text("Manage Bluetooth printers"),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    // TODO: Navigate to printer selection screen
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Printer settings coming soon")),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PrinterSettingsScreen()),
                     );
                   },
                 ),
@@ -112,6 +112,17 @@ class SettingsScreen extends ConsumerWidget {
                         );
                       }
                     }
+                  },
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.file_upload_rounded, color: Colors.blue),
+                  title: const Text("Import Database"),
+                  subtitle: const Text("Restore sales and menu"),
+                  onTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Import feature coming soon")),
+                    );
                   },
                 ),
                 const Divider(height: 1),

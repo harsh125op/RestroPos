@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../core/utils/logger.dart';
 
 class StoreDetails {
   final String restaurantName;
@@ -59,23 +60,36 @@ final storeDetailsProvider = StateNotifierProvider<StoreDetailsNotifier, StoreDe
 });
 
 class StoreDetailsNotifier extends StateNotifier<StoreDetails> {
-  StoreDetailsNotifier() : super(StoreDetails()) {
-    _loadDetails();
+  StoreDetailsNotifier([StoreDetails? initial]) : super(initial ?? StoreDetails()) {
+    if (initial == null) {
+      _loadDetails();
+    }
   }
 
   static const _key = 'store_details';
 
   Future<void> _loadDetails() async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString(_key);
-    if (data != null) {
-      state = StoreDetails.fromMap(jsonDecode(data));
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final data = prefs.getString(_key);
+      AppLogger.d('Loading store details: $data');
+      if (data != null) {
+        state = StoreDetails.fromMap(jsonDecode(data));
+      }
+    } catch (e, stack) {
+      AppLogger.e('Failed to load store details', e, stack);
     }
   }
 
   Future<void> updateDetails(StoreDetails details) async {
     state = details;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_key, jsonEncode(details.toMap()));
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final jsonStr = jsonEncode(details.toMap());
+      AppLogger.d('Saving store details: $jsonStr');
+      await prefs.setString(_key, jsonStr);
+    } catch (e, stack) {
+      AppLogger.e('Failed to save store details', e, stack);
+    }
   }
 }

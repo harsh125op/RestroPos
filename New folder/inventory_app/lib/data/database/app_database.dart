@@ -90,11 +90,11 @@ class AppDatabase extends _$AppDatabase {
   }
 
   // Billing Transaction
-  Future<void> createInvoiceTransaction({
+  Future<int> createInvoiceTransaction({
     required InvoicesCompanion invoice,
     required List<InvoiceItemsCompanion> items,
   }) async {
-    await transaction(() async {
+    return await transaction(() async {
       final invoiceId = await into(invoices).insert(invoice);
 
       for (final item in items) {
@@ -115,6 +115,7 @@ class AppDatabase extends _$AppDatabase {
           quantity: Value(product.quantity - item.quantity.value),
         ));
       }
+      return invoiceId;
     });
   }
 

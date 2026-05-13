@@ -144,11 +144,18 @@ class InvoiceHistoryNotifier extends AsyncNotifier<List<InvoiceEntity>> {
 
     state = const AsyncLoading();
     try {
-      await ref.read(billingRepositoryProvider).createInvoice(invoice);
+      final invoiceId = await ref.read(billingRepositoryProvider).createInvoice(invoice);
       ref.read(cartProvider.notifier).clearCart();
       ref.invalidate(productListProvider); // Refresh stock in inventory
       state = AsyncValue.data(await ref.read(billingRepositoryProvider).getInvoices());
-      return invoice;
+      
+      return InvoiceEntity(
+        id: invoiceId,
+        date: invoice.date,
+        totalAmount: invoice.totalAmount,
+        customerName: invoice.customerName,
+        items: invoice.items,
+      );
     } catch (err, stack) {
       state = AsyncValue.error(err, stack);
       rethrow;

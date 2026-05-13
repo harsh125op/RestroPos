@@ -12,49 +12,50 @@ class InvoiceFormatter {
     buffer.writeln(details.restaurantName.toUpperCase().padLeft((32 + details.restaurantName.length) ~/ 2).padRight(32));
     buffer.writeln(details.address.padLeft((32 + details.address.length) ~/ 2).padRight(32));
     buffer.writeln('Phone: ${details.phone}'.padLeft((32 + 7 + details.phone.length) ~/ 2).padRight(32));
-    if (details.gstin != 'NOTSET') {
-      buffer.writeln('GSTIN: ${details.gstin}'.padLeft((32 + 7 + details.gstin.length) ~/ 2).padRight(32));
-    }
-    buffer.writeln('--------------------------------');
+    
+    buffer.writeln('================================'); // 32 chars
+    
+    // Bill Details
     buffer.writeln('Bill No: #${invoice.id ?? 'TEMP'}');
     buffer.writeln('Date: ${dateFormat.format(invoice.date)}');
     buffer.writeln('Cashier: ${details.cashierName}');
-    if (invoice.customerName != null && invoice.customerName!.isNotEmpty) {
-      buffer.writeln('Table/Cust: ${invoice.customerName}');
-    }
-    buffer.writeln('--------------------------------');
+    
+    buffer.writeln('================================');
 
     // Table Header
-    // 32 chars width (typical 58mm printer)
-    // ITEM (14) | PRICE (6) | QTY (3) | TOTAL (7)
-    buffer.writeln('ITEM          PRICE  QTY  TOTAL');
-    buffer.writeln('--------------------------------');
+    // 32 chars width
+    // ITEM (12) | PRICE (7) | QTY (5) | TOTAL (8)
+    // Total = 32
+    buffer.writeln('ITEM        PRICE    QTY   TOTAL');
+    buffer.writeln('================================');
 
     // Items
     for (final item in invoice.items) {
-      final name = item.productName.length > 13 
-          ? item.productName.substring(0, 11) + '..' 
-          : item.productName.padRight(13);
+      String name = item.productName;
+      if (name.length > 12) {
+        name = name.substring(0, 9) + '...';
+      } else {
+        name = name.padRight(12);
+      }
       
-      final price = currencyFormat.format(item.priceAtBilling).padLeft(6);
-      final qty = item.quantity.toString().padLeft(3);
-      final total = currencyFormat.format(item.priceAtBilling * item.quantity).padLeft(7);
+      final price = currencyFormat.format(item.priceAtBilling).padLeft(7);
+      final qty = item.quantity.toString().padLeft(5);
+      final total = currencyFormat.format(item.priceAtBilling * item.quantity).padLeft(8);
 
-      buffer.writeln('$name $price $qty $total');
+      buffer.writeln('$name$price$qty$total');
     }
 
-    buffer.writeln('--------------------------------');
+    buffer.writeln('================================');
     
     // Totals
-    final subtotal = currencyFormat.format(invoice.totalAmount).padLeft(20);
-    buffer.writeln('Sub Total:      $subtotal');
+    final totalStr = currencyFormat.format(invoice.totalAmount);
+    buffer.writeln('Sub Total:'.padRight(20) + totalStr.padLeft(12));
+    buffer.writeln('GRAND TOTAL:'.padRight(20) + totalStr.padLeft(12));
     
-    final grandTotal = currencyFormat.format(invoice.totalAmount).padLeft(20);
-    buffer.writeln('GRAND TOTAL:    $grandTotal');
-    
-    buffer.writeln('--------------------------------');
+    buffer.writeln('================================');
     buffer.writeln('    Thank you for visiting!    ');
     buffer.writeln('       Visit us again!         ');
+    buffer.writeln('------- GOOD FOOD, GOOD MOOD -------');
     buffer.writeln('\n\n');
 
     return buffer.toString();

@@ -5,7 +5,13 @@ import '../../../inventory/presentation/providers/inventory_providers.dart';
 
 import 'invoice_preview_screen.dart';
 import '../../../../core/widgets/common_widgets.dart';
+import 'package:inventory_app/features/printing/presentation/providers/printing_providers.dart';
 
+import 'package:inventory_app/features/printing/presentation/screens/printer_settings_screen.dart';
+
+import 'package:inventory_app/features/printing/data/services/receipt_formatter.dart';
+
+import 'package:inventory_app/features/settings/presentation/providers/store_details_provider.dart';
 class CreateInvoiceScreen extends ConsumerStatefulWidget {
   const CreateInvoiceScreen({super.key});
 
@@ -20,6 +26,58 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
   void dispose() {
     _customerNameController.dispose();
     super.dispose();
+  }
+
+  Future<void> _printReceipt(dynamic invoice) async {
+    final storeDetails = ref.read(storeDetailsProvider);
+    final cartItems = ref.read(cartProvider);
+    final formatter = ref.read(receiptFormatterProvider);
+    
+    final items = cartItems.map((item) => ReceiptItem(
+      name: item.product.name,
+      quantity: item.quantity,
+      price: item.product.price,
+      total: item.product.price * item.quantity,
+    )).toList();
+
+    final receiptText = formatter.generateReceipt(
+      restaurantName: storeDetails.restaurantName,
+      phoneNumber: storeDetails.phone,
+      address: storeDetails.address,
+      invoiceNumber: invoice.id.toString(),
+      dateTime: invoice.date,
+      cashierName: storeDetails.cashierName,
+      items: items,
+      grandTotal: invoice.totalAmount,
+    );
+
+    final service = ref.read(bluetoothPrintServiceProvider);
+    final success = await service.printReceipt(receiptText);
+    
+    if (!success) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("App Not Installed"),
+            content: const Text("The 'Bluetooth Print' app is required for printing. Would you like to install it from the Play Store?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  ref.read(bluetoothPrintServiceProvider).openPlayStore();
+                },
+                child: const Text("Install"),
+              ),
+            ],
+          ),
+        );
+      }
+    }
   }
 
   void _showProductPicker() {
@@ -124,12 +182,14 @@ class _CreateInvoiceScreenState extends ConsumerState<CreateInvoiceScreen> {
                             if (mounted && invoice != null) {
                               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Bill Generated Successfully!")));
                               
-                              await Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => InvoicePreviewScreen(invoice: invoice),
-                                ),
-                              );
+                              if (mounted) {
+                                await Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => InvoicePreviewScreen(invoice: invoice),
+                                  ),
+                                );
+                              }
                             }
                           } catch (e) {
                             if (mounted) {

@@ -9,7 +9,7 @@ class BillingRepositoryImpl implements BillingRepository {
   BillingRepositoryImpl(this._db);
 
   @override
-  Future<void> createInvoice(InvoiceEntity invoice) async {
+  Future<int> createInvoice(InvoiceEntity invoice) async {
     final invoiceCompanion = InvoicesCompanion.insert(
       date: invoice.date,
       totalAmount: invoice.totalAmount,
@@ -23,7 +23,7 @@ class BillingRepositoryImpl implements BillingRepository {
       priceAtBilling: Value(item.priceAtBilling),
     )).toList();
 
-    await _db.createInvoiceTransaction(
+    return await _db.createInvoiceTransaction(
       invoice: invoiceCompanion,
       items: itemCompanions,
     );
