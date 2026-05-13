@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import '../providers/printing_providers.dart';
 import '../../data/services/receipt_formatter.dart';
 
@@ -12,8 +12,8 @@ class PrinterSettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _PrinterSettingsScreenState extends ConsumerState<PrinterSettingsScreen> {
-  List<BluetoothDevice> _devices = [];
-  BluetoothDevice? _selectedDevice;
+  List<BluetoothInfo> _devices = [];
+  BluetoothInfo? _selectedDevice;
   bool _isConnected = false;
   bool _isLoading = false;
 
@@ -38,19 +38,21 @@ class _PrinterSettingsScreenState extends ConsumerState<PrinterSettingsScreen> {
     final service = ref.read(bluetoothPrintServiceProvider);
     final connected = await service.isConnected();
     setState(() {
-      _isConnected = connected ?? false;
+      _isConnected = connected;
     });
+    ref.read(printerConnectedProvider.notifier).state = connected;
   }
 
   Future<void> _connect() async {
     if (_selectedDevice == null) return;
     setState(() { _isLoading = true; });
     final service = ref.read(bluetoothPrintServiceProvider);
-    final success = await service.connect(_selectedDevice!);
+    final success = await service.connect(_selectedDevice!.macAdress);
     setState(() {
       _isConnected = success;
       _isLoading = false;
     });
+    ref.read(printerConnectedProvider.notifier).state = success;
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Connected successfully!")),
@@ -68,6 +70,7 @@ class _PrinterSettingsScreenState extends ConsumerState<PrinterSettingsScreen> {
     setState(() {
       _isConnected = false;
     });
+    ref.read(printerConnectedProvider.notifier).state = false;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Disconnected.")),
     );
@@ -159,7 +162,7 @@ class _PrinterSettingsScreenState extends ConsumerState<PrinterSettingsScreen> {
                     final device = _devices[index];
                     return ListTile(
                       title: Text(device.name ?? "Unknown Device"),
-                      subtitle: Text(device.address ?? ""),
+                      subtitle: Text(device.macAdress ?? ""),
                       trailing: _selectedDevice == device
                           ? const Icon(Icons.check_circle, color: Colors.teal)
                           : null,

@@ -6,6 +6,7 @@ import 'package:inventory_app/features/reports/domain/entities/category_sales_en
 
 abstract class ReportsRepository {
   Future<SalesSummaryEntity> getDailySalesSummary(DateTime date);
+  Future<SalesSummaryEntity> getSalesSummary({DateTime? start, DateTime? end});
   Future<List<ProductSalesEntity>> getProductWiseSales({DateTime? start, DateTime? end});
   Future<List<CategorySalesEntity>> getCategoryWiseSales({DateTime? start, DateTime? end});
   Future<List<ProductEntity>> getLowStockProducts(int threshold);

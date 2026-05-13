@@ -12,6 +12,7 @@ import 'features/billing/presentation/screens/invoice_history.dart';
 import 'features/reports/presentation/screens/reports_dashboard_screen.dart';
 import 'features/settings/presentation/screens/settings_screen.dart';
 import 'features/billing/presentation/providers/billing_providers.dart';
+import 'features/printing/presentation/providers/printing_providers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -74,6 +75,7 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final invoices = ref.watch(invoiceHistoryProvider).value ?? [];
+    final isPrinterConnected = ref.watch(printerConnectedProvider);
     final now = DateTime.now();
     final todayInvoices = invoices.where((inv) =>
         inv.date.year == now.year &&
@@ -144,9 +146,12 @@ class DashboardScreen extends ConsumerWidget {
             // Printer Status
             Row(
               children: [
-                const Icon(Icons.print, size: 16, color: Colors.green),
+                Icon(Icons.print, size: 16, color: isPrinterConnected ? Colors.green : Colors.red),
                 const SizedBox(width: 8),
-                Text("Printer Status: Ready (External App)", style: TextStyle(color: Colors.green[700], fontSize: 14, fontWeight: FontWeight.w500)),
+                Text(
+                  isPrinterConnected ? "Printer Status: Connected" : "Printer Status: Disconnected", 
+                  style: TextStyle(color: isPrinterConnected ? Colors.green[700] : Colors.red[700], fontSize: 14, fontWeight: FontWeight.w500)
+                ),
               ],
             ),
             const SizedBox(height: 24),

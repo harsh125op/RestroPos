@@ -39,6 +39,32 @@ class ReportsRepositoryImpl implements ReportsRepository {
   }
 
   @override
+  Future<SalesSummaryEntity> getSalesSummary({DateTime? start, DateTime? end}) async {
+    final query = _db.select(_db.invoices);
+    
+    if (start != null && end != null) {
+      query.where((t) => t.date.isBetweenValues(start, end.add(const Duration(days: 1))));
+    }
+    
+    final results = await query.get();
+    
+    if (results.isEmpty) {
+      return SalesSummaryEntity.empty();
+    }
+    
+    double totalSales = 0;
+    for (var row in results) {
+      totalSales += row.totalAmount;
+    }
+    
+    return SalesSummaryEntity(
+      totalSales: totalSales,
+      totalOrders: results.length,
+      averageOrderValue: results.isNotEmpty ? totalSales / results.length : 0,
+    );
+  }
+
+  @override
   Future<List<ProductSalesEntity>> getProductWiseSales({DateTime? start, DateTime? end}) async {
     final query = _db.select(_db.invoiceItems).join([
       innerJoin(_db.products, _db.products.id.equalsExp(_db.invoiceItems.productId)),
@@ -46,7 +72,7 @@ class ReportsRepositoryImpl implements ReportsRepository {
     ]);
 
     if (start != null && end != null) {
-      query.where(_db.invoices.date.isBetweenValues(start, end));
+      query.where(_db.invoices.date.isBetweenValues(start, end.add(const Duration(days: 1))));
     }
 
     final quantitySum = _db.invoiceItems.quantity.sum();
@@ -75,7 +101,7 @@ class ReportsRepositoryImpl implements ReportsRepository {
     ]);
 
     if (start != null && end != null) {
-      query.where(_db.invoices.date.isBetweenValues(start, end));
+      query.where(_db.invoices.date.isBetweenValues(start, end.add(const Duration(days: 1))));
     }
 
     final quantitySum = _db.invoiceItems.quantity.sum();
@@ -114,7 +140,7 @@ class ReportsRepositoryImpl implements ReportsRepository {
     final query = _db.select(_db.invoices);
     
     if (start != null && end != null) {
-      query.where((t) => t.date.isBetweenValues(start, end));
+      query.where((t) => t.date.isBetweenValues(start, end.add(const Duration(days: 1))));
     }
     
     query.orderBy([(t) => OrderingTerm.desc(t.date)]);

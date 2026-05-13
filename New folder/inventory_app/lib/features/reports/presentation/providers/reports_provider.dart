@@ -18,6 +18,11 @@ final dailySalesSummaryProvider = FutureProvider.family<SalesSummaryEntity, Date
   return ref.watch(reportsRepositoryProvider).getDailySalesSummary(date);
 });
 
+// Sales Summary Provider
+final salesSummaryProvider = FutureProvider.family<SalesSummaryEntity, ({DateTime start, DateTime end})>((ref, range) {
+  return ref.watch(reportsRepositoryProvider).getSalesSummary(start: range.start, end: range.end);
+});
+
 // Product Wise Sales Provider
 final productWiseSalesProvider = FutureProvider.family<List<ProductSalesEntity>, ({DateTime start, DateTime end})>((ref, range) {
   return ref.watch(reportsRepositoryProvider).getProductWiseSales(start: range.start, end: range.end);
@@ -43,6 +48,6 @@ final reportsDateRangeProvider = StateProvider<({DateTime start, DateTime end})>
   final now = DateTime.now();
   return (
     start: DateTime(now.year, now.month, now.day),
-    end: DateTime(now.year, now.month, now.day).add(const Duration(days: 1)),
+    end: DateTime(now.year, now.month, now.day),
   );
 });

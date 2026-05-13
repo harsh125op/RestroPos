@@ -1,28 +1,25 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:blue_thermal_printer/blue_thermal_printer.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
+import 'package:image/image.dart' as img;
 import '../../../../core/utils/logger.dart';
 
 class BluetoothPrintService {
-  final BlueThermalPrinter _bluetooth = BlueThermalPrinter.instance;
-
   /// Gets list of paired devices
-  Future<List<BluetoothDevice>> getPairedDevices() async {
+  Future<List<BluetoothInfo>> getPairedDevices() async {
     try {
-      return await _bluetooth.getBondedDevices();
+      return await PrintBluetoothThermal.pairedBluetooths;
     } catch (e) {
       AppLogger.e("Failed to get paired devices", e);
       return [];
     }
   }
 
-  /// Connects to a device
-  Future<bool> connect(BluetoothDevice device) async {
+  /// Connects to a device using MAC address
+  Future<bool> connect(String macAddress) async {
     try {
-      await _bluetooth.connect(device);
-      return true;
+      return await PrintBluetoothThermal.connect(macPrinterAddress: macAddress);
     } catch (e) {
       AppLogger.e("Failed to connect to device", e);
       return false;
@@ -31,62 +28,60 @@ class BluetoothPrintService {
 
   /// Disconnects from device
   Future<void> disconnect() async {
-    await _bluetooth.disconnect();
+    await PrintBluetoothThermal.disconnect;
   }
 
   /// Checks if connected
-  Future<bool?> isConnected() async {
-    return await _bluetooth.isConnected;
+  Future<bool> isConnected() async {
+    return await PrintBluetoothThermal.connectionStatus;
   }
 
   /// Prints receipt with logo and text
   Future<bool> printReceipt(String text, [String? logoPath]) async {
     try {
-      bool? isConnected = await _bluetooth.isConnected;
-      if (isConnected != true) {
+      bool isConnected = await PrintBluetoothThermal.connectionStatus;
+      if (!isConnected) {
         AppLogger.e("Printer not connected");
         return false;
       }
 
+      final profile = await CapabilityProfile.load();
+      final generator = Generator(PaperSize.mm58, profile);
+      List<int> bytes = [];
+
       if (logoPath != null) {
         try {
           // Load asset
-          final ByteData bytes = await rootBundle.load(logoPath);
-          final Uint8List imageBytes = bytes.buffer.asUint8List(
-            bytes.offsetInBytes, 
-            bytes.lengthInBytes
-          );
+          final ByteData data = await rootBundle.load(logoPath);
+          final Uint8List imgBytes = data.buffer.asUint8List();
           
-          // Save to temp file
-          final directory = await getTemporaryDirectory();
-          final path = "${directory.path}/billlogo.png";
-          final file = File(path);
-          await file.writeAsBytes(imageBytes);
+          // Decode image
+          final img.Image? image = img.decodeImage(imgBytes);
           
-          // Print image from file
-          await _bluetooth.printImage(path);
-          await _bluetooth.printNewLine();
+          if (image != null) {
+            // Resize image to fit 58mm printer
+            final img.Image resized = img.copyResize(image, width: 150);
+            
+            // Generate image bytes
+            bytes += generator.image(resized);
+          }
         } catch (e) {
-          AppLogger.e("Failed to print logo image", e);
-          // Don't fail the whole print if logo fails
+          AppLogger.e("Failed to generate logo bytes", e);
         }
       }
 
-      // Print text line by line
+      // Print text line by line using generator
       final lines = text.split('\n');
       for (final line in lines) {
-        if (line.isEmpty) {
-          await _bluetooth.printNewLine();
-        } else {
-          await _bluetooth.printCustom(line, 0, 0);
-        }
+        bytes += generator.text(line);
       }
       
-      // Feed paper
-      await _bluetooth.printNewLine();
-      await _bluetooth.printNewLine();
+      // Feed paper at the end (removed to avoid extra space)
 
-      return true;
+      // Send all bytes at once
+      final success = await PrintBluetoothThermal.writeBytes(bytes);
+
+      return success;
     } catch (e) {
       AppLogger.e("Failed to print receipt", e);
       return false;

@@ -4,3 +4,6 @@ import '../../data/services/receipt_formatter.dart';
 
 final bluetoothPrintServiceProvider = Provider((ref) => BluetoothPrintService());
 final receiptFormatterProvider = Provider((ref) => ReceiptFormatter());
+
+// Provider for printer connection status
+final printerConnectedProvider = StateProvider<bool>((ref) => false);

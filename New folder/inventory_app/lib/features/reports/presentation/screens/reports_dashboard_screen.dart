@@ -11,7 +11,7 @@ class ReportsDashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dateRange = ref.watch(reportsDateRangeProvider);
-    final summaryAsync = ref.watch(dailySalesSummaryProvider(dateRange.start));
+    final summaryAsync = ref.watch(salesSummaryProvider(dateRange));
     final productSalesAsync = ref.watch(productWiseSalesProvider(dateRange));
     final categorySalesAsync = ref.watch(categoryWiseSalesProvider(dateRange));
     final lowStockAsync = ref.watch(lowStockProductsProvider(5));
@@ -29,7 +29,7 @@ class ReportsDashboardScreen extends ConsumerWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          ref.invalidate(dailySalesSummaryProvider);
+          ref.invalidate(salesSummaryProvider);
           ref.invalidate(productWiseSalesProvider);
           ref.invalidate(categoryWiseSalesProvider);
           ref.invalidate(lowStockProductsProvider);
