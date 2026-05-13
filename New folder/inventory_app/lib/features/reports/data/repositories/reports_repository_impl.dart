@@ -137,45 +137,48 @@ class ReportsRepositoryImpl implements ReportsRepository {
 
   @override
   Future<List<InvoiceEntity>> getTransactionHistory({DateTime? start, DateTime? end}) async {
-    final query = _db.select(_db.invoices);
+    final query = _db.select(_db.invoices).join([
+      leftOuterJoin(_db.invoiceItems, _db.invoiceItems.invoiceId.equalsExp(_db.invoices.id)),
+      leftOuterJoin(_db.products, _db.products.id.equalsExp(_db.invoiceItems.productId)),
+    ]);
     
     if (start != null && end != null) {
-      query.where((t) => t.date.isBetweenValues(start, end.add(const Duration(days: 1))));
+      query.where(_db.invoices.date.isBetweenValues(start, end.add(const Duration(days: 1))));
     }
     
-    query.orderBy([(t) => OrderingTerm.desc(t.date)]);
+    query.orderBy([OrderingTerm.desc(_db.invoices.date)]);
 
-    final results = await query.get();
+    final rows = await query.get();
     
-    List<InvoiceEntity> entities = [];
-    for (final inv in results) {
-      final itemsQuery = _db.select(_db.invoiceItems).join([
-        innerJoin(_db.products, _db.products.id.equalsExp(_db.invoiceItems.productId)),
-      ])..where(_db.invoiceItems.invoiceId.equals(inv.id));
+    final Map<int, InvoiceEntity> invoiceMap = {};
+    
+    for (final row in rows) {
+      final inv = row.readTable(_db.invoices);
+      final item = row.readTableOrNull(_db.invoiceItems);
+      final product = row.readTableOrNull(_db.products);
       
-      final itemRows = await itemsQuery.get();
+      if (!invoiceMap.containsKey(inv.id)) {
+        invoiceMap[inv.id] = InvoiceEntity(
+          id: inv.id,
+          date: inv.date,
+          totalAmount: inv.totalAmount,
+          customerName: inv.customerName,
+          items: [],
+        );
+      }
       
-      final itemEntities = itemRows.map((row) {
-        final item = row.readTable(_db.invoiceItems);
-        final product = row.readTable(_db.products);
-        return InvoiceItemEntity(
+      if (item != null && product != null) {
+        invoiceMap[inv.id]!.items.add(InvoiceItemEntity(
           id: item.id,
           invoiceId: item.invoiceId,
           productId: item.productId,
           productName: product.name,
           quantity: item.quantity,
           priceAtBilling: item.priceAtBilling,
-        );
-      }).toList();
-
-      entities.add(InvoiceEntity(
-        id: inv.id,
-        date: inv.date,
-        totalAmount: inv.totalAmount,
-        customerName: inv.customerName,
-        items: itemEntities,
-      ));
+        ));
+      }
     }
-    return entities;
+    
+    return invoiceMap.values.toList();
   }
 }
