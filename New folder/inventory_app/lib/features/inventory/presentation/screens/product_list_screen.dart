@@ -149,13 +149,19 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                                 Text(
                                   product.name,
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 4),
                                 Row(
                                   children: [
-                                    Text(
-                                      product.category,
-                                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                                    Flexible(
+                                      child: Text(
+                                        product.category,
+                                        style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
                                     const SizedBox(width: 8),
                                     Container(

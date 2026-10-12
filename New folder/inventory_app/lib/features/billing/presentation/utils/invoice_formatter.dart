@@ -18,6 +18,9 @@ class InvoiceFormatter {
     // Bill Details
     buffer.writeln('Bill No: #${invoice.id ?? 'TEMP'}');
     buffer.writeln('Date: ${dateFormat.format(invoice.date)}');
+    if (invoice.customerName != null && invoice.customerName!.trim().isNotEmpty) {
+      buffer.writeln('Customer: ${invoice.customerName}');
+    }
     buffer.writeln('Cashier: ${details.cashierName}');
     
     buffer.writeln('================================');

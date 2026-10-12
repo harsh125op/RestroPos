@@ -5,13 +5,7 @@ import '../../../inventory/presentation/providers/inventory_providers.dart';
 
 import 'invoice_preview_screen.dart';
 import '../../../../core/widgets/common_widgets.dart';
-import 'package:inventory_app/features/printing/presentation/providers/printing_providers.dart';
 
-import 'package:inventory_app/features/printing/presentation/screens/printer_settings_screen.dart';
-
-import 'package:inventory_app/features/printing/data/services/receipt_formatter.dart';
-
-import 'package:inventory_app/features/settings/presentation/providers/store_details_provider.dart';
 class CreateInvoiceScreen extends ConsumerStatefulWidget {
   const CreateInvoiceScreen({super.key});
 
@@ -171,7 +165,6 @@ class ProductPickerSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productsAsync = ref.watch(productListProvider);
-    final categories = ['Sweets', 'Chaat', 'Juice', 'Coffee'];
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
@@ -179,132 +172,146 @@ class ProductPickerSheet extends ConsumerWidget {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      child: DefaultTabController(
-        length: categories.length,
-        child: Column(
-          children: [
-            const SizedBox(height: 12),
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: Text("Select Food Items", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            ),
-            TabBar(
-              isScrollable: true,
-              labelColor: Colors.indigo,
-              unselectedLabelColor: Colors.grey,
-              indicatorColor: Colors.indigo,
-              tabs: categories.map((c) => Tab(text: c)).toList(),
-            ),
-            Expanded(
-              child: productsAsync.when(
-                data: (products) => TabBarView(
-                  children: categories.map((category) {
-                    final categoryProducts = products.where((p) => p.category == category).toList();
-                    if (categoryProducts.isEmpty) {
-                      return const Center(child: Text("No items in this category"));
-                    }
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: categoryProducts.length,
-                      itemBuilder: (context, index) {
-                        final p = categoryProducts[index];
-                        final cartItem = ref.watch(cartProvider).where((item) => item.product.id == p.id).firstOrNull;
-                        final currentQty = cartItem?.quantity ?? 0;
-                        
-                        final bool isOutOfStock = p.quantity == 0;
-                        final bool isLowStock = p.quantity > 0 && p.quantity < 10;
-                        
-                        Color cardColor = Colors.white;
-                        Color statusColor = Colors.grey;
-                        String statusText = "In Stock: ${p.quantity}";
+      child: productsAsync.when(
+        data: (products) {
+          final categories = products.map((p) => p.category).toSet().toList();
+          if (categories.isEmpty) categories.add('All');
+          categories.sort();
 
-                        if (isOutOfStock) {
-                          cardColor = Colors.red.shade50;
-                          statusColor = Colors.red;
-                          statusText = "OUT OF STOCK";
-                        } else if (isLowStock) {
-                          cardColor = Colors.orange.shade50;
-                          statusColor = Colors.orange.shade800;
-                          statusText = "LOW STOCK: ${p.quantity}";
-                        }
+          return DefaultTabController(
+            length: categories.length,
+            child: Column(
+              children: [
+                const SizedBox(height: 12),
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2)),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Text("Select Food Items", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                ),
+                TabBar(
+                  isScrollable: true,
+                  labelColor: Colors.indigo,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorColor: Colors.indigo,
+                  tabs: categories.map((c) => Tab(text: c)).toList(),
+                ),
+                Expanded(
+                  child: TabBarView(
+                    children: categories.map((category) {
+                      final categoryProducts = category == 'All' 
+                          ? products 
+                          : products.where((p) => p.category == category).toList();
+                          
+                      if (categoryProducts.isEmpty) {
+                        return const Center(child: Text("No items in this category"));
+                      }
+                      
+                      return ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: categoryProducts.length,
+                        itemBuilder: (context, index) {
+                          final p = categoryProducts[index];
+                          final cartItem = ref.watch(cartProvider).where((item) => item.product.id == p.id).firstOrNull;
+                          final currentQty = cartItem?.quantity ?? 0;
+                          
+                          final bool isOutOfStock = p.quantity == 0;
+                          final bool isLowStock = p.quantity > 0 && p.quantity < 10;
+                          
+                          Color cardColor = Colors.white;
+                          Color statusColor = Colors.grey;
+                          String statusText = "In Stock: ${p.quantity}";
 
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          elevation: 0,
-                          color: cardColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            side: BorderSide(color: statusColor.withOpacity(0.2)),
-                          ),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            title: Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 4),
-                                Text("₹${p.price}", style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
-                                const SizedBox(height: 4),
-                                Text(statusText, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: statusColor)),
-                              ],
+                          if (isOutOfStock) {
+                            cardColor = Colors.red.shade50;
+                            statusColor = Colors.red;
+                            statusText = "OUT OF STOCK";
+                          } else if (isLowStock) {
+                            cardColor = Colors.orange.shade50;
+                            statusColor = Colors.orange.shade800;
+                            statusText = "LOW STOCK: ${p.quantity}";
+                          }
+
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            elevation: 0,
+                            color: cardColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: BorderSide(color: statusColor.withOpacity(0.2)),
                             ),
-                            trailing: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(30),
-                                border: Border.all(color: Colors.grey.shade200),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              title: Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  if (currentQty > 0) ...[
-                                    IconButton(
-                                      icon: const Icon(Icons.remove, size: 20, color: Colors.red),
-                                      onPressed: () => ref.read(cartProvider.notifier).updateQuantity(p.id!, -1),
-                                    ),
-                                    Text("$currentQty", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                                  ],
-                                  IconButton(
-                                    icon: Icon(
-                                      currentQty == 0 ? Icons.add : Icons.add, 
-                                      size: 20, 
-                                      color: isOutOfStock ? Colors.grey : Colors.indigo
-                                    ),
-                                    onPressed: (isOutOfStock || currentQty >= p.quantity) ? null : () {
-                                       if (currentQty == 0) {
-                                         ref.read(cartProvider.notifier).addToCart(p);
-                                       } else {
-                                         ref.read(cartProvider.notifier).updateQuantity(p.id!, 1);
-                                       }
-                                    },
-                                  ),
+                                  const SizedBox(height: 4),
+                                  Text("₹${p.price}", style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.black87)),
+                                  const SizedBox(height: 4),
+                                  Text(statusText, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: statusColor)),
                                 ],
                               ),
+                              trailing: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(30),
+                                  border: Border.all(color: Colors.grey.shade200),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (currentQty > 0) ...[
+                                      IconButton(
+                                        padding: const EdgeInsets.all(4),
+                                        constraints: const BoxConstraints(),
+                                        icon: const Icon(Icons.remove, size: 20, color: Colors.red),
+                                        onPressed: () => ref.read(cartProvider.notifier).updateQuantity(p.id!, -1),
+                                      ),
+                                      Text("$currentQty", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                    ],
+                                    IconButton(
+                                      padding: const EdgeInsets.all(4),
+                                      constraints: const BoxConstraints(),
+                                      icon: Icon(
+                                        currentQty == 0 ? Icons.add : Icons.add, 
+                                        size: 20, 
+                                        color: isOutOfStock ? Colors.grey : Colors.indigo
+                                      ),
+                                      onPressed: (isOutOfStock || currentQty >= p.quantity) ? null : () {
+                                         if (currentQty == 0) {
+                                           ref.read(cartProvider.notifier).addToCart(p);
+                                         } else {
+                                           ref.read(cartProvider.notifier).updateQuantity(p.id!, 1);
+                                         }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  }).toList(),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
                 ),
-                loading: () => const LoadingView(),
-                error: (err, _) => Center(child: Text("Error: $err")),
-              ),
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: CustomButton(
+                    label: "Done",
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: CustomButton(
-                label: "Done",
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, _) => Center(child: Text("Error: $err")),
       ),
     );
   }

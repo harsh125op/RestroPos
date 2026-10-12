@@ -16,9 +16,7 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
   final _quantityController = TextEditingController();
-  String _selectedCategory = 'Sweets';
-
-  final List<String> _categories = ['Sweets', 'Chaat', 'Juice', 'Coffee'];
+  String _selectedCategory = 'Beverages';
 
   @override
   void dispose() {
@@ -56,6 +54,10 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final productsAsync = ref.watch(productListProvider);
+    final List<String> categories = productsAsync.value?.map((p) => p.category).toSet().toList() ?? [];
+    if (categories.isEmpty) categories.add('Beverages');
+
     return Scaffold(
       appBar: AppBar(title: const Text("New Menu Item")),
       body: SingleChildScrollView(
@@ -71,12 +73,27 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
                 validator: (val) => val == null || val.isEmpty ? "Required" : null,
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: _selectedCategory,
-                decoration: const InputDecoration(labelText: "Category", prefixIcon: Icon(Icons.category)),
-                items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-                onChanged: (val) {
-                  if (val != null) setState(() => _selectedCategory = val);
+              Autocomplete<String>(
+                initialValue: TextEditingValue(text: _selectedCategory),
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text.isEmpty) {
+                    return categories;
+                  }
+                  return categories.where((String option) {
+                    return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                  });
+                },
+                onSelected: (String selection) {
+                  _selectedCategory = selection;
+                },
+                fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                  return TextFormField(
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    decoration: const InputDecoration(labelText: "Category", prefixIcon: Icon(Icons.category)),
+                    onChanged: (val) => _selectedCategory = val,
+                    validator: (val) => val == null || val.trim().isEmpty ? "Required" : null,
+                  );
                 },
               ),
               const SizedBox(height: 16),

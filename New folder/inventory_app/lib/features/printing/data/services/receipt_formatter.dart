@@ -22,6 +22,7 @@ class ReceiptFormatter {
     required String address,
     required String invoiceNumber,
     required DateTime dateTime,
+    String? customerName,
     required String cashierName,
     required List<ReceiptItem> items,
     required double grandTotal,
@@ -39,6 +40,9 @@ class ReceiptFormatter {
     // Invoice Info
     buffer.writeln('Bill No: #$invoiceNumber');
     buffer.writeln('Date: ${DateFormat('dd/MM/yyyy HH:mm').format(dateTime)}');
+    if (customerName != null && customerName.trim().isNotEmpty) {
+      buffer.writeln('Customer: $customerName');
+    }
     buffer.writeln('Cashier: $cashierName');
     
     buffer.writeln('================================');

@@ -3,6 +3,8 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:csv/csv.dart';
 
 part 'app_database.g.dart';
 
@@ -63,29 +65,35 @@ class AppDatabase extends _$AppDatabase {
 
           final count = await select(products).get();
           if (count.isEmpty) {
-            await _preloadData();
+            await preloadData();
           }
         },
       );
 
-  Future<void> _preloadData() async {
-    final defaultItems = [
-      // Sweets
-      ProductsCompanion.insert(name: 'Gulab Jamun', category: 'Sweets', quantity: 100, price: 20),
-      ProductsCompanion.insert(name: 'Rasgulla', category: 'Sweets', quantity: 100, price: 25),
-      // Chaat
-      ProductsCompanion.insert(name: 'Pani Puri', category: 'Chaat', quantity: 100, price: 30),
-      ProductsCompanion.insert(name: 'Bhel Puri', category: 'Chaat', quantity: 100, price: 40),
-      // Juice
-      ProductsCompanion.insert(name: 'Orange Juice', category: 'Juice', quantity: 100, price: 50),
-      ProductsCompanion.insert(name: 'Mango Juice', category: 'Juice', quantity: 100, price: 60),
-      // Coffee
-      ProductsCompanion.insert(name: 'Cold Coffee', category: 'Coffee', quantity: 100, price: 80),
-      ProductsCompanion.insert(name: 'Espresso', category: 'Coffee', quantity: 100, price: 70),
-    ];
-
-    for (final item in defaultItems) {
-      await into(products).insert(item);
+  Future<void> preloadData() async {
+    try {
+      String csvString = await rootBundle.loadString('assets/default_menu.csv');
+      csvString = csvString.replaceAll('\r\n', '\n'); // Normalize line endings
+      final List<List<dynamic>> rows = const CsvToListConverter(eol: '\n').convert(csvString);
+      
+      for (final row in rows.skip(1)) {
+        if (row.isEmpty) continue;
+        final type = row[0].toString().trim().toUpperCase();
+        if (type == 'PRODUCT' && row.length >= 6) {
+          final priceStr = row[5].toString().trim();
+          final price = priceStr == 'MRP' ? 0.0 : (double.tryParse(priceStr) ?? 0.0);
+          
+          await into(products).insert(ProductsCompanion.insert(
+            name: row[2].toString(),
+            category: row[3].toString(),
+            quantity: 100, // Default starting stock
+            price: price,
+          ));
+        }
+      }
+    } catch (e) {
+      // Fallback if asset loading fails
+      await into(products).insert(ProductsCompanion.insert(name: 'Bottled Water', category: 'Beverages', quantity: 100, price: 20));
     }
   }
 

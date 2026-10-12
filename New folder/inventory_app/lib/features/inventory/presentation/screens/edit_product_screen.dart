@@ -19,7 +19,6 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
   late TextEditingController _quantityController;
   late String _selectedCategory;
 
-  final List<String> _categories = ['Sweets', 'Chaat', 'Juice', 'Coffee'];
 
   @override
   void initState() {
@@ -66,6 +65,10 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final productsAsync = ref.watch(productListProvider);
+    final List<String> categories = productsAsync.value?.map((p) => p.category).toSet().toList() ?? [];
+    if (categories.isEmpty) categories.add('Beverages');
+
     return Scaffold(
       appBar: AppBar(title: const Text("Edit Menu Item")),
       body: SingleChildScrollView(
@@ -81,12 +84,27 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
                 validator: (val) => val == null || val.isEmpty ? "Required" : null,
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: _selectedCategory,
-                decoration: const InputDecoration(labelText: "Category", prefixIcon: Icon(Icons.category)),
-                items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-                onChanged: (val) {
-                  if (val != null) setState(() => _selectedCategory = val);
+              Autocomplete<String>(
+                initialValue: TextEditingValue(text: _selectedCategory),
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text.isEmpty) {
+                    return categories;
+                  }
+                  return categories.where((String option) {
+                    return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+                  });
+                },
+                onSelected: (String selection) {
+                  _selectedCategory = selection;
+                },
+                fieldViewBuilder: (context, textEditingController, focusNode, onFieldSubmitted) {
+                  return TextFormField(
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    decoration: const InputDecoration(labelText: "Category", prefixIcon: Icon(Icons.category)),
+                    onChanged: (val) => _selectedCategory = val,
+                    validator: (val) => val == null || val.trim().isEmpty ? "Required" : null,
+                  );
                 },
               ),
               const SizedBox(height: 16),

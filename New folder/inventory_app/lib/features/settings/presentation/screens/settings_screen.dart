@@ -144,8 +144,9 @@ class SettingsScreen extends ConsumerWidget {
                       }
 
                       final file = File(path);
-                      final csvString = await file.readAsString();
-                      final List<List<dynamic>> rows = const CsvToListConverter().convert(csvString);
+                      String csvString = await file.readAsString();
+                      csvString = csvString.replaceAll('\r\n', '\n');
+                      final List<List<dynamic>> rows = const CsvToListConverter(eol: '\n').convert(csvString);
 
                       if (rows.isEmpty) {
                         throw Exception("CSV file is empty");
@@ -180,13 +181,15 @@ class SettingsScreen extends ConsumerWidget {
 
                       // Phase 1: Products
                       for (final row in rows.skip(1)) {
-                        if (row[0] == "PRODUCT") {
-                          final oldId = int.tryParse(row[1].toString()) ?? 0;
+                        if (row.isEmpty) continue;
+                        final type = row[0].toString().trim().toUpperCase();
+                        if (type == "PRODUCT") {
+                          final oldId = row.length > 1 ? int.tryParse(row[1].toString()) ?? 0 : 0;
                           final newId = await db.into(db.products).insert(ProductsCompanion.insert(
-                            name: row[2].toString(),
-                            category: row[3].toString(),
-                            quantity: int.tryParse(row[4].toString()) ?? 0,
-                            price: double.tryParse(row[5].toString()) ?? 0.0,
+                            name: row.length > 2 ? row[2].toString() : 'Unknown',
+                            category: row.length > 3 ? row[3].toString() : 'Uncategorized',
+                            quantity: row.length > 4 ? int.tryParse(row[4].toString()) ?? 0 : 0,
+                            price: row.length > 5 ? double.tryParse(row[5].toString()) ?? 0.0 : 0.0,
                           ));
                           oldToNewProductId[oldId] = newId;
                         }
@@ -194,15 +197,17 @@ class SettingsScreen extends ConsumerWidget {
 
                       // Phase 2: Invoices
                       for (final row in rows.skip(1)) {
-                        if (row[0] == "INVOICE") {
-                          final oldId = int.tryParse(row[1].toString()) ?? 0;
-                          final date = DateTime.tryParse(row[3].toString()) ?? DateTime.now();
-                          final total = double.tryParse(row[4].toString()) ?? 0.0;
+                        if (row.isEmpty) continue;
+                        final type = row[0].toString().trim().toUpperCase();
+                        if (type == "INVOICE") {
+                          final oldId = row.length > 1 ? int.tryParse(row[1].toString()) ?? 0 : 0;
+                          final date = row.length > 3 ? DateTime.tryParse(row[3].toString()) ?? DateTime.now() : DateTime.now();
+                          final total = row.length > 4 ? double.tryParse(row[4].toString()) ?? 0.0 : 0.0;
                           
                           final newId = await db.into(db.invoices).insert(InvoicesCompanion.insert(
                             date: date,
                             totalAmount: total,
-                            customerName: Value(row[2].toString()),
+                            customerName: Value(row.length > 2 ? row[2].toString() : ''),
                           ));
                           
                           oldToNewInvoiceId[oldId] = newId;
@@ -211,18 +216,20 @@ class SettingsScreen extends ConsumerWidget {
 
                       // Phase 3: Items
                       for (final row in rows.skip(1)) {
-                        if (row[0] == "ITEM") {
-                          final oldInvoiceId = int.tryParse(row[1].toString()) ?? 0;
+                        if (row.isEmpty) continue;
+                        final type = row[0].toString().trim().toUpperCase();
+                        if (type == "ITEM") {
+                          final oldInvoiceId = row.length > 1 ? int.tryParse(row[1].toString()) ?? 0 : 0;
                           final newInvoiceId = oldToNewInvoiceId[oldInvoiceId];
-                          final oldProductId = int.tryParse(row[3].toString()) ?? 0;
+                          final oldProductId = row.length > 3 ? int.tryParse(row[3].toString()) ?? 0 : 0;
                           final newProductId = oldToNewProductId[oldProductId];
                           
                           if (newInvoiceId != null && newProductId != null) {
                             await db.into(db.invoiceItems).insert(InvoiceItemsCompanion.insert(
                               invoiceId: newInvoiceId,
                               productId: newProductId,
-                              quantity: int.tryParse(row[4].toString()) ?? 0,
-                              priceAtBilling: double.tryParse(row[5].toString()) ?? 0.0,
+                              quantity: row.length > 4 ? int.tryParse(row[4].toString()) ?? 0 : 0,
+                              priceAtBilling: row.length > 5 ? double.tryParse(row[5].toString()) ?? 0.0 : 0.0,
                             ));
                           }
                         }
@@ -241,6 +248,29 @@ class SettingsScreen extends ConsumerWidget {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Import failed: $e"), backgroundColor: Colors.red),
+                        );
+                      }
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.fastfood, color: Colors.orange),
+                  title: const Text("Load Default Menu"),
+                  subtitle: const Text("Populate menu with default 249 items"),
+                  onTap: () async {
+                    try {
+                      final db = ref.read(databaseProvider);
+                      await db.preloadData();
+                      ref.invalidate(productListProvider);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Default menu loaded successfully!"), backgroundColor: Colors.green),
+                        );
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Failed to load menu: $e"), backgroundColor: Colors.red),
                         );
                       }
                     }

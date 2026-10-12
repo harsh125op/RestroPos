@@ -1,0 +1,250 @@
+Type,ID,Name/Customer,Category/Date,Qty/Total,Price
+PRODUCT,1,Bottled Water,Beverages,0,MRP
+PRODUCT,2,Tea (Milk),Beverages,0,39
+PRODUCT,3,Tea (Black),Beverages,0,19
+PRODUCT,4,Tea (Lemon),Beverages,0,25
+PRODUCT,5,Coffee,Beverages,0,49
+PRODUCT,6,Black Coffee,Beverages,0,39
+PRODUCT,7,Cold Coffee,Beverages,0,79
+PRODUCT,8,Fresh Lime Water,Beverages,0,39
+PRODUCT,9,Fresh Lime Soda,Beverages,0,49
+PRODUCT,10,Cold Drinks (200ml),Beverages,0,29
+PRODUCT,11,Masala Cold Drink,Beverages,0,59
+PRODUCT,12,Laassi,Beverages,0,MRP
+PRODUCT,13,Butter Milk (Chaas),Beverages,0,MRP
+PRODUCT,14,Butter toast,Bread & Sandwich,0,69
+PRODUCT,15,Veg. Sandwich,Bread & Sandwich,0,79
+PRODUCT,16,Paneer Sandwich,Bread & Sandwich,0,99
+PRODUCT,17,Cheese Sandwich,Bread & Sandwich,0,119
+PRODUCT,18,Masala Sandwich,Bread & Sandwich,0,79
+PRODUCT,19,Bread Butter,Bread & Sandwich,0,89
+PRODUCT,20,Egg Bhurji,Bread & Sandwich,0,59
+PRODUCT,21,Omelet,Bread & Sandwich,0,69
+PRODUCT,22,Cheese Omelet,Bread & Sandwich,0,99
+PRODUCT,23,Bread Omelet,Bread & Sandwich,0,89
+PRODUCT,24,Plain Maggie,MAGGIE,0,49
+PRODUCT,25,Veg. Maggie,MAGGIE,0,69
+PRODUCT,26,Egg Maggie,MAGGIE,0,79
+PRODUCT,27,Extra: Butter,Extra,0,20
+PRODUCT,28,Extra: Cheese,Extra,0,30
+PRODUCT,29,Veg Soup,Soup,0,79
+PRODUCT,30,Veg. Clear Soup,Soup,0,99
+PRODUCT,31,Veg. Manchow Soup,Soup,0,89
+PRODUCT,32,Veg. Lemon Coriander Soup,Soup,0,99
+PRODUCT,33,Veg. Sweetcorn Soup,Soup,0,99
+PRODUCT,34,Veg. Hot & Sour,Soup,0,89
+PRODUCT,35,Tomato Soup & Cream,Soup,0,119
+PRODUCT,36,Chicken Soup,Soup,0,129
+PRODUCT,37,Chicken Manchow,Soup,0,139
+PRODUCT,38,Chicken Hot & Sour,Soup,0,139
+PRODUCT,39,Chicken Sweetcorn Soup,Soup,0,149
+PRODUCT,40,Veg Cutlet,Snacks,0,59
+PRODUCT,41,Paneer Cutlet,Snacks,0,99
+PRODUCT,42,Cheese Cutlet,Snacks,0,119
+PRODUCT,43,Chicken Cutlet,Snacks,0,119
+PRODUCT,44,Cheese Ball,Snacks,0,189
+PRODUCT,45,French Fries,Snacks,0,99
+PRODUCT,46,Veg. Pakora,Snacks,0,119
+PRODUCT,47,Onion Pakora Chheta,Snacks,0,119
+PRODUCT,48,Paneer Pakora,Snacks,0,199
+PRODUCT,49,Egg Pakora,Snacks,0,99
+PRODUCT,50,Chicken Pakora,Snacks,0,279
+PRODUCT,51,Fish Cutlet (2 pc),Snacks,0,149
+PRODUCT,52,Fish Fingers (8 pc) (@ Availability),Snacks,0,299
+PRODUCT,53,Veg. Roll,Roll,0,59
+PRODUCT,54,Paneer Roll,Roll,0,119
+PRODUCT,55,Spring Roll,Roll,0,139
+PRODUCT,56,Veg. Cheese Roll,Roll,0,119
+PRODUCT,57,Paneer Cheese Roll,Roll,0,149
+PRODUCT,58,Egg Roll (69),Roll,0,69
+PRODUCT,59,Egg Roll (99),Roll,0,99
+PRODUCT,60,Chicken Roll,Roll,0,129
+PRODUCT,61,Chicken Egg Roll,Roll,0,149
+PRODUCT,62,Chicken Spring Roll,Roll,0,169
+PRODUCT,63,Chicken Tikka Roll (2),Roll,0,169
+PRODUCT,64,Paneer Tikka Roll,Roll,0,159
+PRODUCT,65,White Sauce Pasta (V),Pasta,0,109
+PRODUCT,66,White Sauce Pasta (Nv),Pasta,0,149
+PRODUCT,67,Red Sauce Pasta (V),Pasta,0,119
+PRODUCT,68,Red Sauce Pasta (Nv),Pasta,0,169
+PRODUCT,69,Paneer Pasta,Pasta,0,129
+PRODUCT,70,Musroom Pasta,Pasta,0,159
+PRODUCT,71,Add on: Cheese,Pasta,0,30
+PRODUCT,72,Noodles (V),Chinese Cuisine - Noodles/Rice,0,119
+PRODUCT,73,Noodles (Nv),Chinese Cuisine - Noodles/Rice,0,199
+PRODUCT,74,Paneer Noodles,Chinese Cuisine - Noodles/Rice,0,179
+PRODUCT,75,Mushroom Noodles,Chinese Cuisine - Noodles/Rice,0,189
+PRODUCT,76,Mix Noodles (V),Chinese Cuisine - Noodles/Rice,0,219
+PRODUCT,77,Mix Noodles (Nv),Chinese Cuisine - Noodles/Rice,0,249
+PRODUCT,78,Chicken Garlic Chowmein,Chinese Cuisine - Noodles/Rice,0,219
+PRODUCT,79,Hakka Noodles (V),Chinese Cuisine - Noodles/Rice,0,139
+PRODUCT,80,Hakka Noodles (Nv),Chinese Cuisine - Noodles/Rice,0,169
+PRODUCT,81,Schezwan Noodles (V),Chinese Cuisine - Noodles/Rice,0,129
+PRODUCT,82,Schezwan Noodles (Nv),Chinese Cuisine - Noodles/Rice,0,159
+PRODUCT,83,Fried Rice (V),Chinese Cuisine - Noodles/Rice,0,99
+PRODUCT,84,Fried Rice (Nv),Chinese Cuisine - Noodles/Rice,0,149
+PRODUCT,85,Mix Fried Rice (V),Chinese Cuisine - Noodles/Rice,0,169
+PRODUCT,86,Mix Fried Rice (Nv),Chinese Cuisine - Noodles/Rice,0,199
+PRODUCT,87,Egg Fried Rice,Chinese Cuisine - Noodles/Rice,0,119
+PRODUCT,88,Lemon Fried Rice,Chinese Cuisine - Noodles/Rice,0,179
+PRODUCT,89,Schezwan Fried Rice (V),Chinese Cuisine - Noodles/Rice,0,129
+PRODUCT,90,Schezwan Fried Rice (Nv),Chinese Cuisine - Noodles/Rice,0,159
+PRODUCT,91,Chicken Chinese Chop suey,Chinese Cuisine - Noodles/Rice,0,239
+PRODUCT,92,Paneer Chilli (Crispy),Chinese Snacks,0,179
+PRODUCT,93,Paneer Chilli (Gravy),Chinese Snacks,0,199
+PRODUCT,94,Mushroom Chilli (Crispy),Chinese Snacks,0,169
+PRODUCT,95,Mushroom Chilli (Gravy),Chinese Snacks,0,189
+PRODUCT,96,Babycorn Chilli (Crispy),Chinese Snacks,0,179
+PRODUCT,97,Veg. Chilli,Chinese Snacks,0,139
+PRODUCT,98,Chicken Chilli (Crispy),Chinese Snacks,0,179
+PRODUCT,99,Chicken Chilli (Gravy),Chinese Snacks,0,199
+PRODUCT,100,Chicken Chilli Boneless (Crispy),Chinese Snacks,0,199
+PRODUCT,101,Chicken Chilli Boneless (Gravy),Chinese Snacks,0,219
+PRODUCT,102,Egg Chilli,Chinese Snacks,0,149
+PRODUCT,103,Veg. Manchurian,Chinese Snacks,0,149
+PRODUCT,104,Chicken Manchurian,Chinese Snacks,0,199
+PRODUCT,105,Channa Chilli,Chinese Snacks,0,149
+PRODUCT,106,Chicken 65,Chinese Snacks,0,199
+PRODUCT,107,Chicken Dry Fry,Chinese Snacks,0,229
+PRODUCT,108,Chicken Liver Pot,Chinese Snacks,0,249
+PRODUCT,109,Chicken Lollipop,Chinese Snacks,0,149
+PRODUCT,110,Paneer Salt & Pepper,Chinese Snacks,0,169
+PRODUCT,111,American Corn Salt & Pepper,Chinese Snacks,0,139
+PRODUCT,112,Channa Salt & Pepper,Chinese Snacks,0,119
+PRODUCT,113,Mushroom Salt & Pepper,Chinese Snacks,0,139
+PRODUCT,114,Potato Honey Chilli,Chinese Snacks,0,129
+PRODUCT,115,Tawa Roti (Plain),Indian Cuisine - Roti & Parantha,0,15
+PRODUCT,116,Tawa Roti (Butter),Indian Cuisine - Roti & Parantha,0,25
+PRODUCT,117,Plain Parantha,Indian Cuisine - Roti & Parantha,0,35
+PRODUCT,118,Aloo Parantha,Indian Cuisine - Roti & Parantha,0,59
+PRODUCT,119,Sattu Paratha,Indian Cuisine - Roti & Parantha,0,69
+PRODUCT,120,Mix. Paratha,Indian Cuisine - Roti & Parantha,0,89
+PRODUCT,121,Onion Paratha,Indian Cuisine - Roti & Parantha,0,49
+PRODUCT,122,Paneer Paratha,Indian Cuisine - Roti & Parantha,0,79
+PRODUCT,123,Plain Rice (Katarni) (H),Indian Cuisine - Rice & Biryani,0,59
+PRODUCT,124,Plain Rice (Katarni) (F),Indian Cuisine - Rice & Biryani,0,89
+PRODUCT,125,Plain Rice (Basmati),Indian Cuisine - Rice & Biryani,0,129
+PRODUCT,126,Jeera Rice,Indian Cuisine - Rice & Biryani,0,119
+PRODUCT,127,Veg. Pulao,Indian Cuisine - Rice & Biryani,0,129
+PRODUCT,128,Paneer Pulao,Indian Cuisine - Rice & Biryani,0,149
+PRODUCT,129,Mix. Veg. Pulao,Indian Cuisine - Rice & Biryani,0,179
+PRODUCT,130,Veg. Biryani,Indian Cuisine - Rice & Biryani,0,199
+PRODUCT,131,Paneer Biryani,Indian Cuisine - Rice & Biryani,0,219
+PRODUCT,132,Mushroom Biryani,Indian Cuisine - Rice & Biryani,0,239
+PRODUCT,133,Mix. Veg. Biryani,Indian Cuisine - Rice & Biryani,0,269
+PRODUCT,134,Chicken Biryani,Indian Cuisine - Rice & Biryani,0,259
+PRODUCT,135,Hyderabadi Biryani (V),Indian Cuisine - Rice & Biryani,0,229
+PRODUCT,136,Hyderabadi Biryani (Nv),Indian Cuisine - Rice & Biryani,0,269
+PRODUCT,137,Chicken Tikka Biryani,Indian Cuisine - Rice & Biryani,0,299
+PRODUCT,138,Veg. Bamboo Biryani,Indian Cuisine - Rice & Biryani,0,299
+PRODUCT,139,Paneer Bamboo Biryani,Indian Cuisine - Rice & Biryani,0,349
+PRODUCT,140,Mushroom Bamboo Biryani,Indian Cuisine - Rice & Biryani,0,349
+PRODUCT,141,Chicken Bamboo Biryani,Indian Cuisine - Rice & Biryani,0,359
+PRODUCT,142,Mutton Bamboo Biryani (As Per Order),Indian Cuisine - Rice & Biryani,0,379
+PRODUCT,143,Seasonal Veggies (H),Vegetarian,0,89
+PRODUCT,144,Seasonal Veggies (F),Vegetarian,0,179
+PRODUCT,145,Mix. Veg,Vegetarian,0,219
+PRODUCT,146,Matar Paneer,Vegetarian - Paneer Delicacy,0,179
+PRODUCT,147,Paneer Butter Masala,Vegetarian - Paneer Delicacy,0,199
+PRODUCT,148,Paneer Do Pyaza,Vegetarian - Paneer Delicacy,0,219
+PRODUCT,149,Kadhai Paneer,Vegetarian - Paneer Delicacy,0,230
+PRODUCT,150,Paneer Kofta,Vegetarian - Paneer Delicacy,0,249
+PRODUCT,151,Paneer Lababdar,Vegetarian - Paneer Delicacy,0,249
+PRODUCT,152,Shahi Paneer,Vegetarian - Paneer Delicacy,0,259
+PRODUCT,153,Paneer Korma,Vegetarian - Paneer Delicacy,0,239
+PRODUCT,154,Paneer Shahi Korma,Vegetarian - Paneer Delicacy,0,269
+PRODUCT,155,Paneer Makhmali,Vegetarian - Paneer Delicacy,0,279
+PRODUCT,156,Palak Paneer,Vegetarian - Paneer Delicacy,0,219
+PRODUCT,157,Palak Corn,Vegetarian - Paneer Delicacy,0,229
+PRODUCT,158,Mushroom Masala,Vegetarian - Mushroom Delicacy,0,199
+PRODUCT,159,Mushroom Butter Masala,Vegetarian - Mushroom Delicacy,0,219
+PRODUCT,160,Mushroom Do Pyaza,Vegetarian - Mushroom Delicacy,0,219
+PRODUCT,161,Kadhai Mushroom,Vegetarian - Mushroom Delicacy,0,239
+PRODUCT,162,Matar Mushroom,Vegetarian - Mushroom Delicacy,0,249
+PRODUCT,163,Palak Mushroom,Vegetarian - Mushroom Delicacy,0,239
+PRODUCT,164,Aaloo Dum,Vegetarian - Aaloo The Legend,0,139
+PRODUCT,165,Aaloo Kofta,Vegetarian - Aaloo The Legend,0,159
+PRODUCT,166,Kashmiri Aaloo,Vegetarian - Aaloo The Legend,0,179
+PRODUCT,167,Aaloo Jeera,Vegetarian - Aaloo The Legend,0,139
+PRODUCT,168,Aaloo Matar,Vegetarian - Aaloo The Legend,0,169
+PRODUCT,169,Kashmiri Kofta,Vegetarian - Aaloo The Legend,0,179
+PRODUCT,170,Dal Tadka,Vegetarian - Dal,0,129
+PRODUCT,171,Butter Dal Tadka,Vegetarian - Dal,0,149
+PRODUCT,172,Yellow Dal,Vegetarian - Dal,0,99
+PRODUCT,173,Dal Fry,Vegetarian - Dal,0,129
+PRODUCT,174,Dal Makhani,Vegetarian - Dal,0,219
+PRODUCT,175,Chicken Curry (2 pc),Non Vegetarian - Chicken,0,159
+PRODUCT,176,Chicken Do Pyaza (4 pc),Non Vegetarian - Chicken,0,239
+PRODUCT,177,Chicken Kadhai (4 pc),Non Vegetarian - Chicken,0,259
+PRODUCT,178,Chicken Masala (4 pc),Non Vegetarian - Chicken,0,279
+PRODUCT,179,Chicken Bharta,Non Vegetarian - Chicken,0,269
+PRODUCT,180,Chicken Keema,Non Vegetarian - Chicken,0,279
+PRODUCT,181,Chicken Butter Masala (4 pc),Non Vegetarian - Chicken,0,319
+PRODUCT,182,Chicken Tikka Bt. Masala (4 pc),Non Vegetarian - Chicken,0,339
+PRODUCT,183,Chicken Handi (H),Non Vegetarian - Chicken,0,319
+PRODUCT,184,Chicken Handi (F),Non Vegetarian - Chicken,0,449
+PRODUCT,185,Chicken Dehati Style (H),Non Vegetarian - Chicken,0,299
+PRODUCT,186,Chicken Dehati Style (F),Non Vegetarian - Chicken,0,499
+PRODUCT,187,Chicken Lababdar,Non Vegetarian - Chicken,0,459
+PRODUCT,188,Murg Musallam (H),Non Vegetarian - Chicken,0,369
+PRODUCT,189,Murg Musallam (F),Non Vegetarian - Chicken,0,569
+PRODUCT,190,Chicken Kaasa (H),Non Vegetarian - Chicken,0,329
+PRODUCT,191,Chicken Kaasa (F),Non Vegetarian - Chicken,0,519
+PRODUCT,192,Chicken Palak (4 pc),Non Vegetarian - Chicken,0,399
+PRODUCT,193,Fish Fry (2 pc),Non Vegetarian - Fish,0,99
+PRODUCT,194,Fish Curry (2 pc),Non Vegetarian - Fish,0,139
+PRODUCT,195,Fish Masala (2 pc),Non Vegetarian - Fish,0,159
+PRODUCT,196,Fish Butter Masala (2 pc),Non Vegetarian - Fish,0,179
+PRODUCT,197,Fish Sarso Tomato (2 pc),Non Vegetarian - Fish,0,179
+PRODUCT,198,Egg Curry,Non Vegetarian - Egg,0,89
+PRODUCT,199,Egg Masala,Non Vegetarian - Egg,0,99
+PRODUCT,200,Omelet Curry,Non Vegetarian - Egg,0,119
+PRODUCT,201,Egg Do Pyaza,Non Vegetarian - Egg,0,129
+PRODUCT,202,Egg Butter Masala,Non Vegetarian - Egg,0,159
+PRODUCT,203,Mutton Curry (4 pc),Non Vegetarian - Mutton (As Per Order),0,499
+PRODUCT,204,Mutton Handi (4 pc),Non Vegetarian - Mutton (As Per Order),0,539
+PRODUCT,205,Mutton Do Pyaza (4 pc),Non Vegetarian - Mutton (As Per Order),0,559
+PRODUCT,206,Mutton Masala (4 pc),Non Vegetarian - Mutton (As Per Order),0,579
+PRODUCT,207,Mutton Kadhai (4 pc),Non Vegetarian - Mutton (As Per Order),0,579
+PRODUCT,208,Mutton Rogan Josh (4 pc),Non Vegetarian - Mutton (As Per Order),0,519
+PRODUCT,209,Tandoori Roti (Plain),Tandoor - Roti & Indian Bread,0,25
+PRODUCT,210,Tandoori Roti (Butter),Tandoor - Roti & Indian Bread,0,35
+PRODUCT,211,Missi Roti,Tandoor - Roti & Indian Bread,0,59
+PRODUCT,212,Lachha Paratha,Tandoor - Roti & Indian Bread,0,49
+PRODUCT,213,Naan (Plain),Tandoor - Roti & Indian Bread,0,59
+PRODUCT,214,Naan (Butter),Tandoor - Roti & Indian Bread,0,69
+PRODUCT,215,Ajwain Naan,Tandoor - Roti & Indian Bread,0,59
+PRODUCT,216,Garlic Naan (Plain),Tandoor - Roti & Indian Bread,0,69
+PRODUCT,217,Garlic Naan (Butter),Tandoor - Roti & Indian Bread,0,79
+PRODUCT,218,Masala Kulcha,Tandoor - Roti & Indian Bread,0,59
+PRODUCT,219,Chola Kulcha,Tandoor - Roti & Indian Bread,0,129
+PRODUCT,220,Chicken Kulcha,Tandoor - Roti & Indian Bread,0,79
+PRODUCT,221,Paneer Kulcha,Tandoor - Roti & Indian Bread,0,79
+PRODUCT,222,Paneer Tikka (8 pc),Tandoor - Veg.,0,299
+PRODUCT,223,Mushroom Tikka (8 pc),Tandoor - Veg.,0,249
+PRODUCT,224,Veg. Hara Bhara Kebab (8 pc),Tandoor - Veg.,0,199
+PRODUCT,225,Paneer Malai Tikka (8 pc),Tandoor - Veg.,0,329
+PRODUCT,226,Paneer Kali Mirch (8 pc),Tandoor - Veg.,0,299
+PRODUCT,227,Dahi Kebab (8 pc),Tandoor - Veg.,0,199
+PRODUCT,228,Chicken Tandoori (4 pc),Tandoor - Non-Veg.,0,299
+PRODUCT,229,Chicken Tandoori (8 pc),Tandoor - Non-Veg.,0,499
+PRODUCT,230,Chicken Tikka (4 pc),Tandoor - Non-Veg.,0,349
+PRODUCT,231,Chicken Leg Kabab (2 pc),Tandoor - Non-Veg.,0,199
+PRODUCT,232,Chicken Lahsuni Tikka (8 pc),Tandoor - Non-Veg.,0,329
+PRODUCT,233,Chicken Boti Kabab (8 pc),Tandoor - Non-Veg.,0,349
+PRODUCT,234,Chicken Kali Mirch Tikka (8 pc),Tandoor - Non-Veg.,0,339
+PRODUCT,235,Chicken Malai Tikka (8 pc),Tandoor - Non-Veg.,0,379
+PRODUCT,236,Chicken Reshmi Kabab (8 pc),Tandoor - Non-Veg.,0,399
+PRODUCT,237,Chicken Achari Tikka (8 pc),Tandoor - Non-Veg.,0,329
+PRODUCT,238,Fish Tikka (8 pc),Tandoor - Non-Veg.,0,349
+PRODUCT,239,Fish Kabab (8 pc),Tandoor - Non-Veg.,0,339
+PRODUCT,240,Green Salad (H),Salad Counter,0,59
+PRODUCT,241,Green Salad (F),Salad Counter,0,99
+PRODUCT,242,Onion Salad (H),Salad Counter,0,29
+PRODUCT,243,Onion Salad (F),Salad Counter,0,59
+PRODUCT,244,Cucumber Salad (H),Salad Counter,0,79
+PRODUCT,245,Cucumber Salad (F),Salad Counter,0,129
+PRODUCT,246,Kachumber Salad,Salad Counter,0,149
+PRODUCT,247,Papad Dry,Salad Counter,0,20
+PRODUCT,248,Papad Fry,Salad Counter,0,30
+PRODUCT,249,Masala Papad,Salad Counter,0,60
