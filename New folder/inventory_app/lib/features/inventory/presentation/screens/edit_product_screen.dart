@@ -44,7 +44,7 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
           name: _nameController.text.trim(),
           category: _selectedCategory,
           price: double.parse(_priceController.text),
-          quantity: int.parse(_quantityController.text),
+          quantity: int.tryParse(_quantityController.text) ?? widget.product.quantity,
         );
 
         await ref.read(productListProvider.notifier).updateProduct(updatedProduct);
@@ -131,10 +131,11 @@ class _EditProductScreenState extends ConsumerState<EditProductScreen> {
                       decoration: const InputDecoration(labelText: "Stock Qty", prefixIcon: Icon(Icons.storage)),
                       keyboardType: TextInputType.number,
                       validator: (val) {
-                        if (val == null || val.isEmpty) return "Required";
-                        final qty = int.tryParse(val);
-                        if (qty == null) return "Invalid number";
-                        if (qty < 0) return "Must be >= 0";
+                        if (val != null && val.isNotEmpty) {
+                          final qty = int.tryParse(val);
+                          if (qty == null) return "Invalid number";
+                          if (qty < 0) return "Must be >= 0";
+                        }
                         return null;
                       },
                     ),

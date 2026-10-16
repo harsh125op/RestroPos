@@ -15,7 +15,7 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
-  final _quantityController = TextEditingController();
+  final _quantityController = TextEditingController(text: '100');
   String _selectedCategory = 'Beverages';
 
   @override
@@ -33,7 +33,7 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
           name: _nameController.text.trim(),
           category: _selectedCategory,
           price: double.parse(_priceController.text),
-          quantity: int.parse(_quantityController.text),
+          quantity: int.tryParse(_quantityController.text) ?? 100,
         );
 
         await ref.read(productListProvider.notifier).addProduct(product);
@@ -118,8 +118,9 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
                       decoration: const InputDecoration(labelText: "Stock Qty", prefixIcon: Icon(Icons.storage)),
                       keyboardType: TextInputType.number,
                       validator: (val) {
-                        if (val == null || val.isEmpty) return "Required";
-                        if (int.tryParse(val) == null) return "Invalid number";
+                        if (val != null && val.isNotEmpty && int.tryParse(val) == null) {
+                          return "Invalid number";
+                        }
                         return null;
                       },
                     ),

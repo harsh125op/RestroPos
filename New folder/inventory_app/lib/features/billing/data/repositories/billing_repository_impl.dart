@@ -79,4 +79,23 @@ class BillingRepositoryImpl implements BillingRepository {
       throw Exception("Failed to fetch invoices: $e");
     }
   }
+
+  @override
+  Future<void> deleteInvoice(int invoiceId) async {
+    try {
+      await _db.deleteInvoiceTransaction(invoiceId);
+    } catch (e) {
+      throw Exception("Failed to delete invoice: $e");
+    }
+  }
+
+  @override
+  Future<void> updateInvoiceTotal(int invoiceId, double newTotalAmount) async {
+    try {
+      await (_db.update(_db.invoices)..where((t) => t.id.equals(invoiceId)))
+          .write(InvoicesCompanion(totalAmount: Value(newTotalAmount)));
+    } catch (e) {
+      throw Exception("Failed to update invoice total: $e");
+    }
+  }
 }

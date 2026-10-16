@@ -67,8 +67,6 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
               _buildSortItem(ProductSortType.name, "Name (A-Z)", currentSort),
               _buildSortItem(ProductSortType.priceLowHigh, "Price: Low to High", currentSort),
               _buildSortItem(ProductSortType.priceHighLow, "Price: High to Low", currentSort),
-              _buildSortItem(ProductSortType.stockLowHigh, "Stock: Low to High", currentSort),
-              _buildSortItem(ProductSortType.stockHighLow, "Stock: High to Low", currentSort),
             ],
           ),
           const SizedBox(width: 8),
@@ -106,9 +104,6 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
                 final product = products[index];
-                final bool isLowStock = product.quantity < 10 && product.quantity > 0;
-                final bool isOutOfStock = product.quantity == 0;
-
                 return Card(
                   elevation: 0,
                   shape: RoundedRectangleBorder(
@@ -185,25 +180,13 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: isOutOfStock
-                                      ? Colors.red.withValues(alpha: 0.1)
-                                      : isLowStock
-                                          ? Colors.orange.withValues(alpha: 0.1)
-                                          : Colors.green.withValues(alpha: 0.1),
+                                  color: Colors.green.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
-                                  isOutOfStock
-                                      ? "OUT"
-                                      : isLowStock
-                                          ? "LOW: ${product.quantity}"
-                                          : "STOCK: ${product.quantity}",
+                                  "AVAILABLE",
                                   style: TextStyle(
-                                    color: isOutOfStock
-                                        ? Colors.red[700]
-                                        : isLowStock
-                                            ? Colors.orange[800]
-                                            : Colors.green[700],
+                                    color: Colors.green[700],
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
                                   ),

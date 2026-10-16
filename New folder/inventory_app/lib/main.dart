@@ -59,7 +59,7 @@ class MyApp extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
     
     return MaterialApp(
-      title: 'QuickPOS Restaurant',
+      title: 'CUBE Restaurant',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
@@ -85,7 +85,7 @@ class DashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("QuickPOS"),
+        title: const Text("CUBE"),
         elevation: 0,
         actions: [
           IconButton(
@@ -104,7 +104,7 @@ class DashboardScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Welcome to TableTap,",
+              "Welcome to CUBE Restaurant,",
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const Text(

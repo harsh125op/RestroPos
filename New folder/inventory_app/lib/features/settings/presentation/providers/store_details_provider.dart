@@ -11,7 +11,7 @@ class StoreDetails {
   final String cashierName;
 
   StoreDetails({
-    this.restaurantName = 'QuickPOS Restaurant',
+    this.restaurantName = 'CUBE Restaurant',
     this.address = '123 Foodie Street, City',
     this.phone = '+91 9876543210',
     this.gstin = 'NOTSET',
@@ -30,7 +30,7 @@ class StoreDetails {
 
   factory StoreDetails.fromMap(Map<String, dynamic> map) {
     return StoreDetails(
-      restaurantName: map['restaurantName'] ?? 'QuickPOS Restaurant',
+      restaurantName: map['restaurantName'] ?? 'CUBE Restaurant',
       address: map['address'] ?? '123 Foodie Street, City',
       phone: map['phone'] ?? '+91 9876543210',
       gstin: map['gstin'] ?? 'NOTSET',

@@ -97,7 +97,7 @@ class AppDatabase extends _$AppDatabase {
     }
   }
 
-  // Billing Transaction
+  // Billing Transaction (Stock is not reduced; items remain constantly available)
   Future<int> createInvoiceTransaction({
     required InvoicesCompanion invoice,
     required List<InvoiceItemsCompanion> items,
@@ -108,22 +108,19 @@ class AppDatabase extends _$AppDatabase {
       for (final item in items) {
         final itemToInsert = item.copyWith(invoiceId: Value(invoiceId));
         await into(invoiceItems).insert(itemToInsert);
-
-        // Update product stock
-        final product = await (select(products)
-              ..where((t) => t.id.equals(item.productId.value)))
-            .getSingle();
-
-        if (product.quantity < item.quantity.value) {
-          throw Exception('Insufficient stock for ${product.name}');
-        }
-
-        await (update(products)..where((t) => t.id.equals(item.productId.value)))
-            .write(ProductsCompanion(
-          quantity: Value(product.quantity - item.quantity.value),
-        ));
       }
       return invoiceId;
+    });
+  }
+
+  // Delete Invoice
+  Future<void> deleteInvoiceTransaction(int invoiceId) async {
+    await transaction(() async {
+      // 1. Delete invoice items
+      await (delete(invoiceItems)..where((t) => t.invoiceId.equals(invoiceId))).go();
+
+      // 2. Delete invoice
+      await (delete(invoices)..where((t) => t.id.equals(invoiceId))).go();
     });
   }
 

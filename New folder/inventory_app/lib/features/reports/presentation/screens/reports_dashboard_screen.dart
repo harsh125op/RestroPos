@@ -14,7 +14,6 @@ class ReportsDashboardScreen extends ConsumerWidget {
     final summaryAsync = ref.watch(salesSummaryProvider(dateRange));
     final productSalesAsync = ref.watch(productWiseSalesProvider(dateRange));
     final categorySalesAsync = ref.watch(categoryWiseSalesProvider(dateRange));
-    final lowStockAsync = ref.watch(lowStockProductsProvider(5));
     final transactionsAsync = ref.watch(transactionHistoryProvider(dateRange));
 
     return Scaffold(
@@ -32,7 +31,6 @@ class ReportsDashboardScreen extends ConsumerWidget {
           ref.invalidate(salesSummaryProvider);
           ref.invalidate(productWiseSalesProvider);
           ref.invalidate(categoryWiseSalesProvider);
-          ref.invalidate(lowStockProductsProvider);
           ref.invalidate(transactionHistoryProvider);
         },
         child: SingleChildScrollView(
@@ -49,9 +47,6 @@ class ReportsDashboardScreen extends ConsumerWidget {
               const SizedBox(height: 24),
               _buildSectionTitle("Category-wise Sales"),
               _buildCategorySalesCards(categorySalesAsync),
-              const SizedBox(height: 24),
-              _buildSectionTitle("Low Stock Alerts"),
-              _buildLowStockList(lowStockAsync),
               const SizedBox(height: 24),
               _buildSectionTitle("Recent Transactions"),
               _buildTransactionList(transactionsAsync),
@@ -196,30 +191,6 @@ class ReportsDashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildLowStockList(AsyncValue lowStockAsync) {
-    return lowStockAsync.when(
-      data: (data) => data.isEmpty
-          ? _buildEmptyState("All products in stock", icon: Icons.check_circle_outline)
-          : Card(
-              color: Colors.red.shade50,
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  final item = data[index];
-                  return ListTile(
-                    leading: const Icon(Icons.warning, color: Colors.red),
-                    title: Text(item.name),
-                    trailing: Text("Stock: ${item.quantity}", style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                  );
-                },
-              ),
-            ),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, stack) => Text("Error: $err"),
-    );
-  }
 
   Widget _buildTransactionList(AsyncValue transactionsAsync) {
     final dateFormat = DateFormat('hh:mm a');

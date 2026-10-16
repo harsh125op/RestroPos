@@ -26,19 +26,15 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
   void addToCart(ProductEntity product) {
     final existingIndex = state.indexWhere((item) => item.product.id == product.id);
     if (existingIndex != -1) {
-      if (state[existingIndex].quantity < product.quantity) {
-        state = [
-          for (int i = 0; i < state.length; i++)
-            if (i == existingIndex)
-              CartItem(product: state[i].product, quantity: state[i].quantity + 1)
-            else
-              state[i]
-        ];
-      }
+      state = [
+        for (int i = 0; i < state.length; i++)
+          if (i == existingIndex)
+            CartItem(product: state[i].product, quantity: state[i].quantity + 1)
+          else
+            state[i]
+      ];
     } else {
-      if (product.quantity > 0) {
-        state = [...state, CartItem(product: product)];
-      }
+      state = [...state, CartItem(product: product)];
     }
   }
 
@@ -54,7 +50,7 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
         if (newQuantity >= 1) {
           newState.add(CartItem(
             product: item.product,
-            quantity: newQuantity.clamp(1, item.product.quantity),
+            quantity: newQuantity,
           ));
         }
         // If < 1, we don't add it to newState (effectively removing it)
@@ -67,6 +63,10 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
 
   void clearCart() {
     state = [];
+  }
+
+  void setCart(List<CartItem> items) {
+    state = items;
   }
 
   double get totalAmount => state.fold(0, (sum, item) => sum + item.total);
@@ -126,13 +126,15 @@ class InvoiceHistoryNotifier extends AsyncNotifier<List<InvoiceEntity>> {
     return ref.read(billingRepositoryProvider).getInvoices();
   }
 
-  Future<InvoiceEntity?> createInvoice(String? customerName) async {
+  Future<InvoiceEntity?> createInvoice(String? customerName, {double? customTotal}) async {
     final cartItems = ref.read(cartProvider);
     if (cartItems.isEmpty) return null;
 
+    final double total = customTotal ?? ref.read(cartProvider.notifier).totalAmount;
+
     final invoice = InvoiceEntity(
       date: DateTime.now(),
-      totalAmount: ref.read(cartProvider.notifier).totalAmount,
+      totalAmount: total,
       customerName: customerName,
       items: cartItems.map((item) => InvoiceItemEntity(
         productId: item.product.id!,
@@ -160,5 +162,35 @@ class InvoiceHistoryNotifier extends AsyncNotifier<List<InvoiceEntity>> {
       state = AsyncValue.error(err, stack);
       rethrow;
     }
+  }
+
+  Future<void> prepareInvoiceForEditing(InvoiceEntity invoice) async {
+    if (invoice.id != null) {
+      await ref.read(billingRepositoryProvider).deleteInvoice(invoice.id!);
+      ref.invalidate(productListProvider);
+      state = AsyncValue.data(await ref.read(billingRepositoryProvider).getInvoices());
+    }
+
+    final allProducts = await ref.read(productRepositoryProvider).getProducts();
+    final productMap = {for (var p in allProducts) p.id: p};
+
+    final cartItems = invoice.items.map((item) {
+      final product = productMap[item.productId] ??
+          ProductEntity(
+            id: item.productId,
+            name: item.productName,
+            category: 'General',
+            quantity: item.quantity + 100,
+            price: item.priceAtBilling,
+          );
+      return CartItem(product: product, quantity: item.quantity);
+    }).toList();
+
+    ref.read(cartProvider.notifier).setCart(cartItems);
+  }
+
+  Future<void> updateInvoiceTotal(int invoiceId, double newTotalAmount) async {
+    await ref.read(billingRepositoryProvider).updateInvoiceTotal(invoiceId, newTotalAmount);
+    state = AsyncValue.data(await ref.read(billingRepositoryProvider).getInvoices());
   }
 }
